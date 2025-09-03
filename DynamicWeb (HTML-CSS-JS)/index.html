@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop#2: Dynamic Web [html css js]</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Workshop#2: Dynamic Web [html css js]</h1>
+    
+    <!-- ข้อ 1: นาฬิกาดิจิทัล -->
+    <div class="section">
+        <h2>ข้อ 1: นาฬิกาดิจิทัลแบบเรียลไทม์</h2>
+        <div class="clock" id="clock">00:00:00</div>
+        <div>
+            <button id="toggleFormat">เปลี่ยนเป็นรูปแบบ 12 ชั่วโมง</button>
+            <button id="changeColor">เปลี่ยนสีพื้นหลัง</button>
+        </div>
+    </div>
+    
+    <!-- ข้อ 2: To-Do List -->
+    <div class="section">
+        <h2>ข้อ 2: รายการสิ่งที่ต้องทำ (To-Do List)</h2>
+        <div>
+            <input type="text" id="todoInput" placeholder="เพิ่มงานใหม่...">
+            <button id="addTodo">เพิ่ม</button>
+        </div>
+        <div id="todoList"></div>
+    </div>
+    
+    <!-- ข้อ 3: สภาพอากาศ -->
+    <div class="section">
+        <h2>ข้อ 3: แอพแสดงสภาพอากาศ</h2>
+        <div>
+            <input type="text" id="cityInput" placeholder="ชื่อเมือง...">
+            <button id="getWeather">ตรวจสอบสภาพอากาศ</button>
+        </div>
+        <div id="weatherResult"></div>
+    </div>
+
+    <script src="script.js">
+       
+    </script>
+</body>
+</html>
