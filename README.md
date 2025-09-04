@@ -90,5 +90,5 @@ This is a sample learning tool for the CSI205 course.
 ---
 
 <p align="center">
-  <small>© 2023 CSI205 Front End Software Development. All rights reserved.</small>
+  <small>© 2025 CSI205 Front End Software Development. All rights reserved.</small>
 </p>
