@@ -4,21 +4,22 @@
             color: #333;
             max-width: 1000px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 10px;
+            background-color: whitesmoke;
         }
         .section {
             background: white;
+            border: solid 2px darkblue;
             border-radius: 8px;
-            padding: 20px;
+            padding: 10px;
             margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 8px rgba(0,0,0,0.1);
         }
-        h1, h2 {
+        h2, h3 {
             color: #2c3e50;
         }
         button {
-            background: #3498db;
+            background: darkblue;
             color: white;
             border: none;
             padding: 8px 15px;
@@ -27,29 +28,34 @@
             margin: 5px;
         }
         button:hover {
-            background: #2980b9;
+            background: lightslategray;
+            color: darkblue;
+            font-weight: bold;
+            position: relative;
+            top: 2px;
+            box-shadow: 0 4px 6px darkblue;
         }
         input[type="text"] {
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            width: 200px;
+            width: 250px;
         }
         .clock {
             font-size: 2.5em;
             text-align: center;
-            margin: 20px 0;
+            margin: 15px 0;
             font-family: 'Courier New', monospace;
-            background: #222;
+            background: slateblue;
             color: #0f0;
-            padding: 20px;
+            padding: 15px;
             border-radius: 5px;
         }
         .todo-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px;
+            padding: 8px;
             border-bottom: 1px solid #eee;
         }
         .todo-item.completed span {
@@ -57,9 +63,10 @@
             color: #888;
         }
         .weather-card {
-            border: 1px solid #ddd;
+            border: 1px solid grey;
+            background: snow;
             border-radius: 8px;
-            padding: 15px;
+            padding: 10px;
             margin-top: 15px;
             text-align: center;
         }
@@ -67,3 +74,20 @@
             color: #e74c3c;
             margin-top: 5px;
         }
+        .readme-link {
+            background: darkgreen;
+            color: wheat;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .readme-link:hover {
+            background: wheat;
+            color: darkgreen;
+            font-weight: bold;
+            position: relative;
+            top: 2px;
+            box-shadow: 0 4px 6px green;
+        }   

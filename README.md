@@ -1,11 +1,94 @@
-# 'CSI205': FRONT END SOFTWARE DEVELOPMENT
+# CSI205: FRONT END SOFTWARE DEVELOPMENT
 
-This is a sample learning tool for the CSI 205 course.
+This is a sample learning tool for the CSI205 course.
 
-[Git Repository Link:] (https://github.com/ThinnaphatCSI/CSI205)
+---
 
-Git is the free and open source distributed version control system that's responsible for everything GitHub related that happens locally on your computer.
+<h2>📁 Git Repository</h2>
 
-[Download Node.js Link:] (https://nodejs.org/en/download)
+<p>Git is the free and open source distributed version control system that's responsible for everything GitHub related that happens locally on your computer.</p>
 
-Node.js is an open-source, cross-platform JavaScript runtime environment that allows developers to execute JavaScript code outside of a web browser.
+<p align="center">
+  <a href="https://github.com/ThinnaphatCSI/CSI205">
+    <img src="https://img.shields.io/badge/GitHub-Repository-blue?style=for-the-badge&logo=github" alt="GitHub Repository">
+  </a>
+</p>
+
+<p align="center">
+  <strong>ลิงก์:</strong> https://github.com/ThinnaphatCSI/CSI205
+</p>
+
+---
+
+<h2>⬇️ Download Node.js</h2>
+
+<p>Node.js is an open-source, cross-platform JavaScript runtime environment that allows developers to execute JavaScript code outside of a web browser.</p>
+
+<p align="center">
+  <a href="https://nodejs.org/en/download">
+    <img src="https://img.shields.io/badge/Download-Node.js-green?style=for-the-badge&logo=node.js" alt="Download Node.js">
+  </a>
+</p>
+
+<p align="center">
+  <strong>ลิงก์:</strong> https://nodejs.org/en/download
+</p>
+
+---
+
+<h2>💻 Example Learning</h2>
+
+<p>Explore this practical example of dynamic web development using HTML, CSS, and JavaScript.</p>
+
+<p align="center">
+  <a href="https://thinnaphatcsi.github.io/CSI205/DynamicWeb%20(HTML-CSS-JS)/">
+    <img src="https://img.shields.io/badge/Example-DynamicWeb_(HTML--CSS--JS)-orange?style=for-the-badge" alt="DynamicWeb Example">
+  </a>
+</p>
+
+<p align="center">
+  <strong>ลิงก์:</strong> https://thinnaphatcsi.github.io/CSI205/DynamicWeb%20(HTML-CSS-JS)/
+</p>
+
+---
+
+<h2>🛠️ Technologies Used</h2>
+
+<ul>
+  <li>HTML5</li>
+  <li>CSS3</li>
+  <li>JavaScript</li>
+  <li>Git</li>
+  <li>Node.js</li>
+</ul>
+
+---
+
+<h2>📚 Course Topics</h2>
+
+<ol>
+  <li>Introduction to Frontend Development</li>
+  <li>HTML Fundamentals</li>
+  <li>CSS Styling and Layouts</li>
+  <li>JavaScript Programming</li>
+  <li>Responsive Web Design</li>
+  <li>Version Control with Git</li>
+  <li>Introduction to Node.js</li>
+</ol>
+
+---
+
+<h2>📞 Contact</h2>
+
+<p>For more information about this course, please contact:</p>
+
+<p>
+  <strong>Instructor:</strong> Mr. Thinnaphat Borirak<br>
+  <strong>Email:</strong> thinnaphat.bo@gmail.com
+</p>
+
+---
+
+<p align="center">
+  <small>© 2023 CSI205 Front End Software Development. All rights reserved.</small>
+</p>
