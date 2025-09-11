@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตัวอย่างการใช้งาน Google Fonts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Thai', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.5;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            background: darkgray;
+            color: black;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .font-weight-300 { font-weight: 300; }
+        .font-weight-400 { font-weight: 400; }
+        .font-weight-500 { font-weight: 500; }
+        .font-weight-600 { font-weight: 600; }
+        
+        .example {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .code-example {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .usage {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>การใช้งาน Google Fonts</h1>
+        <p>แบบตัวอย่างการใช้งานฟอนต์ Noto Sans Thai</p>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <h2>น้ำหนักฟอนต์ต่างๆ</h2>
+            
+            <div class="example">
+                <h3 class="font-weight-300">น้ำหนัก 300 (Light)</h3>
+                <p class="font-weight-300">สวัสดีครับ นี่คือตัวอย่างข้อความภาษาไทยด้วยฟอนต์ Noto Sans Thai</p>
+            </div>
+            
+            <div class="example">
+                <h3 class="font-weight-400">น้ำหนัก 400 (Regular)</h3>
+                <p class="font-weight-400">สวัสดีครับ นี่คือตัวอย่างข้อความภาษาไทยด้วยฟอนต์ Noto Sans Thai</p>
+            </div>
+            
+            <div class="example">
+                <h3 class="font-weight-500">น้ำหนัก 500 (Medium)</h3>
+                <p class="font-weight-500">สวัสดีครับ นี่คือตัวอย่างข้อความภาษาไทยด้วยฟอนต์ Noto Sans Thai</p>
+            </div>
+            
+            <div class="example">
+                <h3 class="font-weight-600">น้ำหนัก 600 (SemiBold)</h3>
+                <p class="font-weight-600">สวัสดีครับ นี่คือตัวอย่างข้อความภาษาไทยด้วยฟอนต์ Noto Sans Thai</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>การใช้งานใน CSS</h2>
+            
+            <div class="code-example">
+                /* วิธีการใช้ฟอนต์ใน CSS */<br>
+                body {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;font-family: 'Noto Sans Thai', sans-serif;<br>
+                }<br><br>
+                
+                /* กำหนดน้ำหนักต่างๆ */<br>
+                .light-text {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;font-weight: 300;<br>
+                }<br><br>
+                
+                .regular-text {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;font-weight: 400;<br>
+                }<br><br>
+                
+                .medium-text {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;font-weight: 500;<br>
+                }<br><br>
+                
+                .semibold-text {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;font-weight: 600;<br>
+                }
+            </div>
+            
+            <div class="example">
+                <h3>ประโยชน์ของการใช้ Google Fonts</h3>
+                <ul>
+                    <li>ไม่ต้องโฮสต์ไฟล์ฟอนต์บนเซิร์ฟเวอร์ตัวเอง</li>
+                    <li>โหลดเร็วด้วยระบบ CDN ของ Google</li>
+                    <li>รองรับการแสดงผลบนเบราว์เซอร์ต่างๆ</li>
+                    <li>ใช้งานฟรี</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="usage">
+        <h2>เหตุผลที่ควรใช้ Noto Sans Thai สำหรับภาษาไทย</h2>
+        <p>Noto Sans Thai เป็นฟอนต์ที่ออกแบบมาสำหรับภาษาไทยโดยเฉพาะ ทำให้ตัวอักษรไทยอ่านง่ายกว่าฟอนต์ทั่วไป และรองรับตัวอักษรไทยได้ครบถ้วน ฟอนต์นี้ยังเข้ากันได้ดีกับฟอนต์ Sans-serif ภาษาอื่นๆ ทำให้เว็บไซต์ดูเป็นมืออาชีพมากขึ้น</p>
+        
+        <p>การใช้งานฟอนต์ที่ออกแบบมาสำหรับภาษาไทยโดยเฉพาะจะช่วยแก้ปัญหาเกี่ยวกับการแสดงผลตัวอักษรไทยที่ไม่ชัดเจน หรือมีระยะห่างระหว่างตัวอักษรที่ไม่เหมาะสม ซึ่งเป็นปัญหาที่พบบ่อยเมื่อใช้ฟอนต์ที่ไม่ได้ออกแบบสำหรับภาษาไทย</p>
+    </div>
+    
+    <footer>
+        <p>ตัวอย่างการใช้งาน Google Fonts สำหรับแบบฟอร์มในการเรียนรู้@CSI205 [Front-End software Development]</p>
+    </footer>
+</body>
+</html>

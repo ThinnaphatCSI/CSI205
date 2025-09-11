@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop: Grid-Layout design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>กรณีศึกษา: 5 ตัวอย่าง Layout Grid สำหรับแบบฟอร์ม</h1>
+            <p class="description">( สำหรับการออกแบบ Layout Grid ที่เหมาะสมจะช่วยเพิ่มประสิทธิภาพและประสบการณ์ผู้ใช้ในการกรอกแบบฟอร์มได้ )</p>
+        </header>
+        
+        <div class="examples-container">
+            <!-- ตัวอย่างที่ 1 -->
+            <div class="example">
+                <div class="example-title">ตัวอย่างที่ 1: Grid แบบสมมาตร (2 คอลัมน์)</div>
+                <div class="example-content">
+                    <p class="example-description">การจัดวางฟิลด์ในแบบฟอร์มด้วยคอลัมน์สมมาตร 2 คอลัมน์ พร้อมฟิลด์แบบเต็มความกว้างสำหรับข้อมูลที่ต้องการพื้นที่มาก ดูเป็นระเบียบ</p>
+                    <div class="example-usage">
+                        <strong>เหมาะสำหรับฟอร์มทั่วไป:</strong> ฟอร์มลงทะเบียน, ฟอร์มข้อมูลส่วนตัว, ฟอร์มการติดต่อ
+                    </div>
+                    <div class="form-grid-1">
+                        <div class="form-item">ชื่อ</div>
+                        <div class="form-item">นามสกุล</div>
+                        <div class="form-item">อีเมล</div>
+                        <div class="form-item">เบอร์โทรศัพท์</div>
+                        <div class="form-item full-width">ที่อยู่</div>
+                        <div class="form-item">จังหวัด</div>
+                        <div class="form-item">รหัสไปรษณีย์</div>
+                    </div>
+                    <div class="code-sample">
+                        .form-grid-1 {<br>
+                        &nbsp;&nbsp;display: grid;<br>
+                        &nbsp;&nbsp;grid-template-columns: 1fr 1fr;<br>
+                        &nbsp;&nbsp;gap: 15px;<br>
+                        }<br>
+                        .full-width { grid-column: 1 / span 2; }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ตัวอย่างที่ 2 -->
+            <div class="example">
+                <div class="example-title">ตัวอย่างที่ 2: Grid แบบ 3 คอลัมน์</div>
+                <div class="example-content">
+                    <p class="example-description">การจัดวางแบบ 3 คอลัมน์ เป็นฟิลด์แบบ double-width ช่วยให้สามารถจัดกลุ่มฟิลด์ข้อมูลได้มากขึ้นในพื้นที่จำกัด</p>
+                    <div class="example-usage">
+                        <strong>เหมาะสำหรับข้อมูลที่สำคัญ:</strong> ฟอร์มสั่งซื้อ, ฟอร์มข้อมูลผลิตภัณฑ์, ฟอร์มข้อมูลการชำระเงิน
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-item">คำนำหน้า</div>
+                        <div class="form-item">ชื่อ</div>
+                        <div class="form-item">นามสกุล</div>
+                        <div class="form-item">อายุ</div>
+                        <div class="form-item double-width">อาชีพ</div>
+                        <div class="form-item">สถานภาพ</div>
+                        <div class="form-item">การศึกษา</div>
+                        <div class="form-item">เงินเดือน</div>
+                    </div>
+                    <div class="code-sample">
+                        .form-grid-2 {<br>
+                        &nbsp;&nbsp;display: grid;<br>
+                        &nbsp;&nbsp;grid-template-columns: 1fr 1fr 1fr;<br>
+                        &nbsp;&nbsp;gap: 12px;<br>
+                        }<br>
+                        .double-width { grid-column: span 2; }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ตัวอย่างที่ 3 -->
+            <div class="example">
+                <div class="example-title">ตัวอย่างที่ 3: Grid แบบ Responsive</div>
+                <div class="example-content">
+                    <p class="example-description">การออกแบบที่ปรับเปลี่ยนตามขนาดหน้าจอโดยอัตโนมัติ ด้วยฟังก์ชัน auto-fit และ minmax()</p>
+                    <div class="example-usage">
+                        <strong>เหมาะสำหรับมือถือ:</strong> ฟอร์มที่ต้องแสดงบนอุปกรณ์ต่างๆ, ฟอร์มที่ต้องการประสบการณ์การใช้งานที่ยืดหยุ่น
+                    </div>
+                    <div class="form-grid-3">
+                        <div class="form-item">สินค้า</div>
+                        <div class="form-item">ราคาต่อหน่วย</div>
+                        <div class="form-item">จำนวน</div>
+                        <div class="form-item">ส่วนลด</div>
+                        <div class="form-item">จำนวนเงิน</div>
+                        <div class="form-item">วันที่สั่งซื้อ</div>
+                        <div class="form-item">วันที่จัดส่ง</div>
+                        <div class="form-item">สถานะ</div>
+                    </div>
+                    <div class="code-sample">
+                        .form-grid-3 {<br>
+                        &nbsp;&nbsp;display: grid;<br>
+                        &nbsp;&nbsp;grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));<br>
+                        &nbsp;&nbsp;gap: 15px;<br>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ตัวอย่างที่ 4 -->
+            <div class="example">
+                <div class="example-title">ตัวอย่างที่ 4: Grid แบบ Asymmetric</div>
+                <div class="example-content">
+                    <p class="example-description">การจัดวางแบบไม่สมมาตร โดยมีคอลัมน์ขนาดต่างกัน เพื่อเน้นฟิลด์ที่สำคัญหรือต้องการพื้นที่มากกว่า</p>
+                    <div class="example-usage">
+                        <strong>เหมาะสำหรับข้อมูลมาก:</strong> ฟอร์มแก้ไขโปรไฟล์, ฟอร์มตั้งค่าต่างๆ, ฟอร์มที่มีฟิลด์คำอธิบายยาวๆ
+                    </div>
+                    <div class="form-grid-4">
+                        <div class="form-item">ชื่อผู้ใช้</div>
+                        <div class="form-item">ข้อมูลส่วนตัว</div>
+                        <div class="form-item">อีเมล</div>
+                        <div class="form-item">ที่อยู่จัดส่ง</div>
+                        <div class="form-item full-width">คำอธิบายเพิ่มเติม</div>
+                        <div class="form-item">เบอร์ติดต่อ</div>
+                        <div class="form-item">ที่ทำงาน</div>
+                    </div>
+                    <div class="code-sample">
+                        .form-grid-4 {<br>
+                        &nbsp;&nbsp;display: grid;<br>
+                        &nbsp;&nbsp;grid-template-columns: 1fr 2fr;<br>
+                        &nbsp;&nbsp;gap: 15px;<br>
+                        }<br>
+                        .full-width { grid-column: 1 / span 2; }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ตัวอย่างที่ 5 -->
+            <div class="example">
+                <div class="example-title">ตัวอย่างที่ 5: Grid แบบ Complex Layout</div>
+                <div class="example-content">
+                    <p class="example-description">การจัดวางแบบซับซ้อนด้วยการกำหนดทั้งแถวและคอลัมน์ สำหรับฟอร์มที่มีโครงสร้างหลายระดับ</p>
+                    <div class="example-usage">
+                        <strong>เหมาะสำหรับแสดงรายงาน:</strong> ฟอร์มแดชบอร์ด, ฟอร์มจัดการระบบ, ฟอร์มที่มีข้อมูลหลายหมวดหมู่
+                    </div>
+                    <div class="form-grid-5">
+                        <div class="form-item header">ข้อมูลการสั่งซื้อ</div>
+                        <div class="form-item">ลูกค้า</div>
+                        <div class="form-item">วันที่สั่ง</div>
+                        <div class="form-item">สถานะ</div>
+                        <div class="form-item sidebar">รายการสินค้า</div>
+                        <div class="form-item">จำนวน</div>
+                        <div class="form-item">ราคา</div>
+                        <div class="form-item footer">หมายเหตุและการจัดส่ง</div>
+                    </div>
+                    <div class="code-sample">
+                        .form-grid-5 {<br>
+                        &nbsp;&nbsp;display: grid;<br>
+                        &nbsp;&nbsp;grid-template-columns: 2fr 1fr 1fr;<br>
+                        &nbsp;&nbsp;grid-template-rows: auto auto auto;<br>
+                        &nbsp;&nbsp;gap: 15px;<br>
+                        }<br>
+                        .header { grid-column: 1 / span 3; }<br>
+                        .sidebar { grid-row: 2 / span 2; }<br>
+                        .footer { grid-column: 2 / span 2; }
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="responsive-note">
+                <h3><i class="fas fa-mobile-alt icon"></i>การรองรับการแสดงผลบนมือถือ</h3>
+                <p>ทุกตัวอย่างรองรับการแสดงผลบนมือถือโดยจะเปลี่ยนเป็นคอลัมน์เดียวเมื่อหน้าจอมีขนาดเล็กตามความกว้างที่ระบุ</p><hr>          
+                <p>การออกแบบ Layout Grid สำหรับแบบฟอร์มในการเรียนรู้@CSI205 [Front-End software Development]</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

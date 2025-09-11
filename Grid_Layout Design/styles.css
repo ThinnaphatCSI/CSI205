@@ -1,0 +1,272 @@
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Thai', sans-serif;
+        }
+        
+        body {
+            padding: 20px;
+            background-color: whitesmoke;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgb(118, 0, 165) 0%, #000000 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .examples-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .example {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .example:hover {
+            transform: translateY(-5px);
+            border: rgb(0, 0, 0) solid 2px;
+        }
+        
+        .example-title {
+            padding: 15px 20px;
+            background-color: #58008b;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .example-content {
+            padding: 20px;
+        }
+        
+        .example-description {
+            margin-bottom: 15px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+        
+        .example-usage {
+            background-color: #f3f7ff;
+            padding: 12px 15px;
+            border-left: 4px solid #000205;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #444;
+        }
+        
+        /* ตัวอย่างที่ 1: Grid แบบสมมาตร 2 คอลัมน์ */
+        .form-grid-1 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+        }
+        
+        .form-grid-1 .form-item {
+            padding: 12px;
+            background-color: #c8e6c9;
+            border: 1px solid #81c784;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .form-grid-1 .full-width {
+            grid-column: 1 / span 2;
+        }
+        
+        /* ตัวอย่างที่ 2: Grid แบบ 3 คอลัมน์ */
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            padding: 20px;
+            background-color: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+        }
+        
+        .form-grid-2 .form-item {
+            padding: 12px;
+            background-color: #bbdefb;
+            border: 1px solid #90caf9;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .form-grid-2 .double-width {
+            grid-column: span 2;
+        }
+        
+        /* ตัวอย่างที่ 3: Grid แบบ Responsive */
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background-color: #fff3e0;
+            border: 2px solid #ff9800;
+            border-radius: 8px;
+        }
+        
+        .form-grid-3 .form-item {
+            padding: 12px;
+            background-color: #ffe0b2;
+            border: 1px solid #ffb74d;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        /* ตัวอย่างที่ 4: Grid แบบ Asymmetric */
+        .form-grid-4 {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            padding: 20px;
+            background-color: #fce4ec;
+            border: 2px solid #ec407a;
+            border-radius: 8px;
+        }
+        
+        .form-grid-4 .form-item {
+            padding: 12px;
+            background-color: #f8bbd0;
+            border: 1px solid #f48fb1;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .form-grid-4 .full-width {
+            grid-column: 1 / span 2;
+        }
+        
+        /* ตัวอย่างที่ 5: Grid แบบ Complex Layout */
+        .form-grid-5 {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 15px;
+            padding: 20px;
+            background-color: #e8eaf6;
+            border: 2px solid #3f51b5;
+            border-radius: 8px;
+        }
+        
+        .form-grid-5 .form-item {
+            padding: 12px;
+            background-color: #c5cae9;
+            border: 1px solid #9fa8da;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .form-grid-5 .header {
+            grid-column: 1 / span 3;
+            background-color: #7986cb;
+            color: white;
+        }
+        
+        .form-grid-5 .sidebar {
+            grid-row: 2 / span 2;
+        }
+        
+        .form-grid-5 .footer {
+            grid-column: 2 / span 2;
+        }
+        
+        .code-sample {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #2d3748;
+            color: #e2e8f0;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 992px) {
+            .examples-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid-1,
+            .form-grid-2,
+            .form-grid-4,
+            .form-grid-5 {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid-1 .full-width,
+            .form-grid-2 .double-width,
+            .form-grid-4 .full-width,
+            .form-grid-5 .header,
+            .form-grid-5 .footer {
+                grid-column: 1;
+            }
+            
+            .form-grid-5 .sidebar {
+                grid-row: auto;
+            }
+        }
+        
+        .responsive-note {
+            background: #e6fffa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            border: 2px dashed #2e009b;
+        }
+        
+        .responsive-note h3 {
+            color: #2c7a7b;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            color: darkslateblue;
+            font-size: 0.9rem;
+        }
