@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เครื่องคิดเลขแบบมีประวัติ</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f5f5f5;
+    }
+    
+    .calculator {
+      display: flex;
+      max-width: 800px;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    
+    .calc-container {
+      padding: 20px;
+      width: 300px;
+    }
+    
+    .display {
+      background-color: #f8f8f8;
+      padding: 20px;
+      text-align: right;
+      font-size: 28px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      min-height: 40px;
+      border: 1px solid #ddd;
+    }
+    
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    
+    button {
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background-color: #f0f0f0;
+      transition: background-color 0.2s;
+    }
+    
+    button:hover {
+      background-color: #ddd;
+    }
+    
+    .operator {
+      background-color: #ff9500;
+      color: white;
+    }
+    
+    .operator:hover {
+      background-color: #e58900;
+    }
+    
+    .equals {
+      background-color: #4CAF50;
+      color: white;
+      grid-column: span 2;
+    }
+    
+    .equals:hover {
+      background-color: #45a049;
+    }
+    
+    .clear {
+      background-color: #f44336;
+      color: white;
+    }
+    
+    .clear:hover {
+      background-color: #d32f2f;
+    }
+    
+    .history-container {
+      padding: 20px;
+      width: 300px;
+      background-color: #f9f9f9;
+      border-left: 1px solid #eee;
+    }
+    
+    .history-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .history-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .history-item {
+      padding: 10px;
+      margin-bottom: 8px;
+      background-color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      border: 1px solid #eee;
+    }
+    
+    .history-item:hover {
+      background-color: #f0f0f0;
+    }
+    
+    .history-clear {
+      margin-top: 15px;
+      padding: 8px 15px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    .history-clear:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="calc-container">
+      <div class="display" id="display">0</div>
+      <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button onclick="appendToDisplay('/')">/</button>
+        <button onclick="appendToDisplay('*')">×</button>
+        <button onclick="appendToDisplay('-')">-</button>
+        
+        <button onclick="appendToDisplay('7')">7</button>
+        <button onclick="appendToDisplay('8')">8</button>
+        <button onclick="appendToDisplay('9')">9</button>
+        <button class="operator" onclick="appendToDisplay('+')">+</button>
+        
+        <button onclick="appendToDisplay('4')">4</button>
+        <button onclick="appendToDisplay('5')">5</button>
+        <button onclick="appendToDisplay('6')">6</button>
+        <button onclick="appendToDisplay('.')">.</button>
+        
+        <button onclick="appendToDisplay('1')">1</button>
+        <button onclick="appendToDisplay('2')">2</button>
+        <button onclick="appendToDisplay('3')">3</button>
+        <button onclick="calculate()">=</button>
+        
+        <button onclick="appendToDisplay('0')" style="grid-column: span 2;">0</button>
+        <button onclick="appendToDisplay('00')">00</button>
+      </div>
+    </div>
+    
+    <div class="history-container">
+      <div class="history-title">ประวัติการคำนวณ</div>
+      <div class="history-list" id="historyList"></div>
+      <button class="history-clear" onclick="clearHistory()">ลบประวัติทั้งหมด</button>
+    </div>
+  </div>
+
+  <script>
+    let currentInput = '0';
+    let calculationHistory = [];
+    
+    const display = document.getElementById('display');
+    const historyList = document.getElementById('historyList');
+    
+    // อัปเดตการแสดงผล
+    function updateDisplay() {
+      display.textContent = currentInput;
+    }
+    
+    // เพิ่มตัวอักษรไปยัง display
+    function appendToDisplay(value) {
+      if (currentInput === '0' && value !== '.') {
+        currentInput = value;
+      } else {
+        currentInput += value;
+      }
+      updateDisplay();
+    }
+    
+    // ล้าง display
+    function clearDisplay() {
+      currentInput = '0';
+      updateDisplay();
+    }
+    
+    // คำนวณผลลัพธ์
+    function calculate() {
+      try {
+        // ใช้ Function constructor สำหรับการคำนวณ (ควรใช้ด้วยความระมัดระวัง)
+        const result = eval(currentInput);
+        
+        // เพิ่มลงในประวัติ
+        addToHistory(`${currentInput} = ${result}`);
+        
+        currentInput = String(result);
+        updateDisplay();
+      } catch (error) {
+        currentInput = 'Error';
+        updateDisplay();
+        setTimeout(() => {
+          currentInput = '0';
+          updateDisplay();
+        }, 1500);
+      }
+    }
+    
+    // เพิ่มการคำนวณลงในประวัติ
+    function addToHistory(calculation) {
+      calculationHistory.push(calculation);
+      
+      // สร้าง element สำหรับประวัติ
+      const historyItem = document.createElement('div');
+      historyItem.className = 'history-item';
+      historyItem.textContent = calculation;
+      
+      // เมื่อคลิกที่ประวัติ ให้ใส่การคำนวณกลับไปที่ display
+      historyItem.addEventListener('click', () => {
+        const expression = calculation.split(' = ')[0];
+        currentInput = expression;
+        updateDisplay();
+      });
+      
+      // เพิ่มปุ่มลบสำหรับรายการนี้
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'ลบ';
+      deleteBtn.style.cssText = 'float: right; padding: 2px 5px; font-size: 12px;';
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        historyItem.remove();
+        calculationHistory = calculationHistory.filter(item => item !== calculation);
+      });
+      
+      historyItem.appendChild(deleteBtn);
+      historyList.appendChild(historyItem);
+    }
+    
+    // ล้างประวัติทั้งหมด
+    function clearHistory() {
+      calculationHistory = [];
+      historyList.innerHTML = '';
+    }
+  </script>
+</body>
+</html>
