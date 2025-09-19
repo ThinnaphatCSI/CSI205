@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workshop #Demo-GridResponsive Gallery Travel</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #333;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    
+    .description {
+      font-size: 1.1rem;
+      color: #7f8c8d;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    .gallery-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .gallery-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .gallery-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    
+    .gallery-item:hover img {
+      transform: scale(1.05);
+    }
+    
+    .caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .gallery-item:hover .caption {
+      transform: translateY(0);
+    }
+    
+    /* Media queries สำหรับ responsive */
+    @media (max-width: 1024px) {
+      .gallery {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .gallery {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+    }
+    
+    /* สไตล์สำหรับ overlay */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+    
+    .overlay-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+    }
+    
+    .overlay-content img {
+      max-width: 100%;
+      max-height: 80vh;
+      border: 5px solid white;
+      border-radius: 5px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+    }
+    
+    .image-details {
+      color: white;
+      text-align: center;
+      margin-top: 15px;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 30px;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    
+    .close-btn:hover {
+      color: #e74c3c;
+    }
+    
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 40px;
+      color: white;
+      background: rgba(0, 0, 0, 0.3);
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    
+    .nav-btn:hover {
+      background: rgba(0, 0, 0, 0.6);
+    }
+    
+    .prev-btn {
+      left: 20px;
+    }
+    
+    .next-btn {
+      right: 20px;
+    }
+    
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #7f8c8d;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>แกลเลอรีภาพธรรมชาติ</h1>
+      <p class="description">แกลเลอรีภาพที่ตอบสนองตามอุปกรณ์ต่างๆ คลิกที่ภาพเพื่อดูขนาดเต็ม</p>
+    </header>
+    
+    <div class="gallery">
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" alt="ภูเขาและทะเลสาบ">
+        <div class="caption">ภูเขาและทะเลสาบ</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1470240731273-7821a6eeb6bd" alt="ป่าไม้ในฤดูใบไม้ร่วง">
+        <div class="caption">ป่าไม้ในฤดูใบไม้ร่วง</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5" alt="ภูมิประเทศแบบทะเลทราย">
+        <div class="caption">ภูมิประเทศแบบทะเลทราย</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1502082553048-f009c37129b9" alt="ภูมิประเทศแบบเทือกเขา">
+        <div class="caption">ภูมิประเทศแบบเทือกเขา</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1470115636492-6d2b56f9146d" alt="ทางน้ำในป่า">
+        <div class="caption">ทางน้ำในป่า</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1452570053594-1b985d6ea890" alt="ชายหาดตอนพระอาทิตย์ตก">
+        <div class="caption">ชายหาดตอนพระอาทิตย์ตก</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470" alt="ทิวทัศน์ริมชายฝั่ง">
+        <div class="caption">ทิวทัศน์ริมชายฝั่ง</div>
+      </div>
+      <div class="gallery-item">
+        <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e" alt="ธรรมชาติในฤดูหนาว">
+        <div class="caption">ธรรมชาติในฤดูหนาว</div>
+      </div>
+    </div>
+    
+    <div class="overlay" id="overlay">
+      <button class="close-btn" id="closeBtn">&times;</button>
+      <button class="nav-btn prev-btn" id="prevBtn">&lt;</button>
+      <button class="nav-btn next-btn" id="nextBtn">&gt;</button>
+      <div class="overlay-content">
+        <img id="fullImage" src="" alt="">
+        <div class="image-details">
+          <h3 id="imageTitle"></h3>
+          <p id="imageDesc"></p>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>สร้างด้วย HTML, CSS และ JavaScript | แกลเลอรีภาพ Responsive</p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const galleryItems = document.querySelectorAll('.gallery-item');
+      const overlay = document.getElementById('overlay');
+      const fullImage = document.getElementById('fullImage');
+      const closeBtn = document.getElementById('closeBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const imageTitle = document.getElementById('imageTitle');
+      const imageDesc = document.getElementById('imageDesc');
+      
+      let currentIndex = 0;
+      
+      // เปิด overlay เมื่อคลิกที่ภาพ
+      galleryItems.forEach((item, index) => {
+        item.addEventListener('click', function() {
+          currentIndex = index;
+          updateOverlay();
+          overlay.classList.add('active');
+          document.body.style.overflow = 'hidden'; // ป้องกันการสครอลล์เมื่อ overlay เปิด
+        });
+      });
+      
+      // ปิด overlay
+      closeBtn.addEventListener('click', function() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto'; // อนุญาตให้สครอลล์ได้เมื่อปิด overlay
+      });
+      
+      // ปิด overlay เมื่อคลิกนอกเนื้อหา
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+          document.body.style.overflow = 'auto';
+        }
+      });
+      
+      // นำทางไปยังภาพก่อนหน้า
+      prevBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+        updateOverlay();
+      });
+      
+      // นำทางไปยังภาพถัดไป
+      nextBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        currentIndex = (currentIndex + 1) % galleryItems.length;
+        updateOverlay();
+      });
+      
+      // ฟังก์ชันอัปเดต overlay
+      function updateOverlay() {
+        const activeItem = galleryItems[currentIndex];
+        const imgSrc = activeItem.querySelector('img').src;
+        const imgAlt = activeItem.querySelector('img').alt;
+        const caption = activeItem.querySelector('.caption').textContent;
+        
+        fullImage.src = imgSrc;
+        fullImage.alt = imgAlt;
+        imageTitle.textContent = caption;
+        imageDesc.textContent = `ภาพ ${currentIndex + 1} จาก ${galleryItems.length}`;
+      }
+      
+      document.addEventListener('keydown', function(e) {
+        if (overlay.classList.contains('active')) {
+          if (e.key === 'Escape') {
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+          } else if (e.key === 'ArrowLeft') {
+            currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+            updateOverlay();
+          } else if (e.key === 'ArrowRight') {
+            currentIndex = (currentIndex + 1) % galleryItems.length;
+            updateOverlay();
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
