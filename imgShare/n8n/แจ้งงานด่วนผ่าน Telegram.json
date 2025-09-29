@@ -1,0 +1,135 @@
+{
+  "name": "แจ้งงานด่วนผ่าน Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {
+          "readStatus": "unread"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -464,
+        0
+      ],
+      "id": "36da11f8-63fa-4359-94db-54cde01f6156",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yOVbmlpGHq9km7bR",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d0417200-86d8-425c-af15-e466f8c2af5c",
+              "leftValue": "={{ $json.From }}",
+              "rightValue": "suparoekc@yahoo.com",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "5b1d036a-1350-4193-b216-f09611dc6489",
+              "leftValue": "={{ $json.Subject }}",
+              "rightValue": "ด่วน",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        0
+      ],
+      "id": "8ef873c9-0ffb-4726-bded-d1ac5a43afed",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "7515863070",
+        "text": "อ่านอีเมล มีเรื่องด่วน ",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        -96
+      ],
+      "id": "320e9a23-6cb4-4fdf-8b87-490853fe610b",
+      "name": "Send a text message",
+      "webhookId": "be737343-a570-48cc-80d7-b522754400b0",
+      "credentials": {
+        "telegramApi": {
+          "id": "0gTBTGO8GPJXIqBO",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "164420b7-a3d0-4d95-90f2-71d31fa966f5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "08e5372234c31f7410b34988b4ed9ad772109b70c19bb43fd587640dd2f991d8"
+  },
+  "id": "FMfN7XZbHgWgTdCz",
+  "tags": []
+}

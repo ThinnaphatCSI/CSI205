@@ -1,0 +1,280 @@
+{
+  "name": "นัดหมายอาจารย์",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "ระบบนัดหมายอาจารย์ ",
+        "formDescription": "กรอกข้อมูลในแบบฟอร์มเพื่อนัดหนมายอาจารย์ ",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "รหัสนักศึกษา",
+              "fieldType": "number",
+              "placeholder": "กรอกรหัสนักศึกษา ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "ชื่อ - นามสกุล ",
+              "placeholder": "กรอกชื่อ นามสกุล ",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "อีเมล ",
+              "fieldType": "email",
+              "placeholder": "ใส่อีเมลนักศึกษา"
+            },
+            {
+              "fieldLabel": "รายละเอียด",
+              "placeholder": "ใส่รายละเอียดเรื่องที่ต้องการคำปรึกษา "
+            },
+            {
+              "fieldLabel": "วันที่นัดหมาย ",
+              "fieldType": "date",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "เวลานัดหมาย ",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "รอบเช้า (11:30 - 12:00) "
+                  },
+                  {
+                    "option": "รอบเย็น (17:30-18:00)"
+                  }
+                ]
+              },
+              "multiselect": true,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "eb5513f0-dc65-43d4-b799-654cce21b5cf",
+      "name": "On form submission",
+      "webhookId": "d6002a09-ed86-4498-b7b5-0ea571f8be94"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "195nH_s0WYWmkacCIqWYYp2i5P57XO7mRjrDrpKLs0yI",
+          "mode": "list",
+          "cachedResultName": "นัดหมายอาจารย์",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/195nH_s0WYWmkacCIqWYYp2i5P57XO7mRjrDrpKLs0yI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/195nH_s0WYWmkacCIqWYYp2i5P57XO7mRjrDrpKLs0yI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "รหัสนักศึกษา": "={{ $json['รหัสนักศึกษา'] }}",
+            "ชื่อ - นามสกุล": "={{ $json['ชื่อ - นามสกุล '] }}",
+            "อีเมล": "={{ $json['อีเมล '] }}",
+            "เวลานัดหมาย": "={{ $json['เวลานัดหมาย '][0] }}",
+            "รายละเอียด": "={{ $json['รายละเอียด'] }}",
+            "วันที่นัดหมาย ": "={{ $json['วันที่นัดหมาย '] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "รหัสนักศึกษา",
+              "displayName": "รหัสนักศึกษา",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ชื่อ - นามสกุล",
+              "displayName": "ชื่อ - นามสกุล",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "อีเมล",
+              "displayName": "อีเมล",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "วันที่นัดหมาย ",
+              "displayName": "วันที่นัดหมาย ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "เวลานัดหมาย",
+              "displayName": "เวลานัดหมาย",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "รายละเอียด",
+              "displayName": "รายละเอียด",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ชื่อ - นามสกุล ",
+              "displayName": "ชื่อ - นามสกุล ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "อีเมล ",
+              "displayName": "อีเมล ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "เวลานัดหมาย ",
+              "displayName": "เวลานัดหมาย ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "submittedAt",
+              "displayName": "submittedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "formMode",
+              "displayName": "formMode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "c5765288-8ab9-4625-8cd9-d28543edfc03",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lgb0IQn1mJf4LBbv",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['อีเมล'] }}",
+        "subject": "ยืนยันการนัดหมายอาจารย์ IT SPU ",
+        "message": "=ยืนยันการนัดหมายวันที่  {{ $json['วันที่นัดหมาย'] }} เวลา {{ $json['เวลานัดหมาย'] }} รายละเอียดเพิ่มเติม (ถ้ามี){{ $json['รายละเอียด'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "cdc28d5a-5007-44d1-b7b3-db028a80a391",
+      "name": "Send a message",
+      "webhookId": "a2ee4b0c-8aab-470f-b3c3-2923fa1060ba",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yOVbmlpGHq9km7bR",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a9718ab4-b7ea-4168-a95f-4ceca0bb5be6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "08e5372234c31f7410b34988b4ed9ad772109b70c19bb43fd587640dd2f991d8"
+  },
+  "id": "A7XQUGS7xJYw4dLM",
+  "tags": []
+}

@@ -1,0 +1,562 @@
+{
+  "name": "04.1-Student-Tracking (xlsx input)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "### 01-นำเข้าเอกสาร xlsx \n- เปิด SCMS เลือกเมนู ส่วนตัว→ตารางปฏิบัติงาน→ใบแจ้งรายชื่อเข้าห้องเรียน\n- กรอกข้อมูลรายวิชา **เลือกกลุ่มทฤษีทุกกลุ่ม** และเลือก **แสดง E-mail** และ **แสดงเบอร์มือถือ** \n- เลือก **เลือกพิมพ์โดย** เป็น **Export to MS Excell** กดปุ่ม **แสดงรายงาน**\n- แปลงไฟล์จาก .xls เป็น .xlsx ไฟล์ ด้วยโปรแกรม word \n- นำไฟล์ .xlsx ใส่ลงใน gDrive โฟลเดอร์ **import-xlsx**\n\n",
+        "width": 576,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -576,
+        -192
+      ],
+      "typeVersion": 1,
+      "id": "6d75cff8-ee99-49e8-8490-1ae71b700b33",
+      "name": "Sticky Note",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "returnAll": true,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1Dizap7CQjLrDUm0qxb7s9JZndfMGDAoD",
+            "mode": "list",
+            "cachedResultName": "import-xlsx",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1Dizap7CQjLrDUm0qxb7s9JZndfMGDAoD"
+          }
+        },
+        "options": {
+          "fields": [
+            "*"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -336,
+        96
+      ],
+      "id": "d6129de6-80f4-412b-b9b7-1f3b15a79e32",
+      "name": "Scan input folder",
+      "notesInFlow": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "xRkrDIqgCNBr0ana",
+          "name": "drive-001"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -560,
+        192
+      ],
+      "id": "91a3628d-8c2b-4950-a6f6-b14a3c5b5043",
+      "name": "Every a minute",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        0
+      ],
+      "id": "51249b91-8dc4-4d91-9088-1c4ba0810c37",
+      "name": "Manual"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "headerRow": false
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        336,
+        96
+      ],
+      "id": "f14ddb43-857d-48d4-b01f-97f5b9cbcc81",
+      "name": "xlsx to JSON",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        112,
+        0
+      ],
+      "id": "ba3080f9-6627-4dde-bc7a-65fd0f023d21",
+      "name": "Download xlsx",
+      "notesInFlow": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "xRkrDIqgCNBr0ana",
+          "name": "drive-001"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// retrieve all row\nconst rows = $input.all()\n\n// extract semester and year\nconst firstRowString = rows[0].json.row[0]\nconst splitedString = firstRowString.split(' ')\nconst combineString = splitedString[splitedString.length - 1]\nconst splitCombindString = combineString.split('/')\nconst semester = splitCombindString[0]\nconst year = splitCombindString[splitCombindString.length - 1]\n\n// build new filename\nconst secondRowString = rows[1].json.row[0]\nconst colonIndex = secondRowString.indexOf(':')\nconst dashIndex = secondRowString.indexOf('-')\nconst endThaiIndex = secondRowString.indexOf(' (') \nconst endEngIndex = secondRowString.indexOf(') ')\nconst subjectCode = secondRowString.substring(colonIndex + 1, dashIndex).trim()\nconst subjectName = secondRowString.substring(dashIndex + 1, endThaiIndex).trim()\nconst subjectNameEng = secondRowString.substring(endThaiIndex + 2, endEngIndex).trim()\n\n// return {year, semester, subjectCode}\n// return {year, semester, subjectCode, subjectName}\nreturn {year, semester, subjectCode, subjectName, subjectNameEng}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        96
+      ],
+      "id": "02949c04-c060-4cf4-a016-33d17dc89ef8",
+      "name": "Extract info"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get all rows\nconst rows = $input.all();\n\nrows.forEach((row) => {\n  let delSum = 0\n  // remove \"ลำดับ\" (0)\n  // row.json.row.splice(0 - delSum, 1); delSum ++;\n  // remove \"รหัสนักศึกษา\" (1)\n  // row.json.row.splice(1 - delSum, 1); delSum ++;\n  // remove \"ชื่อนามสกุล\" (2)\n  // row.json.row.splice(2 - delSum, 1); delSum ++;\n  // remove \"คณะ\" (3)\n  // row.json.row.splice(3 - delSum, 1); delSum ++;\n  // remove \"สาขา\" (4)\n  // row.json.row.splice(4 - delSum, 1); delSum ++;\n  // remove \"รอบ\" (5), \n  row.json.row.splice(5 - delSum, 1); delSum ++;\n  // remove \"กลุ่มเรียน\" (6)\n  // row.json.row.splice(6 - delSum, 1); delSum ++;\n  // \"CGPA\" (7), \n  row.json.row.splice(7 - delSum, 1); delSum ++;\n  // remove \"เบอร์โทร\" (8)\n  // row.json.row.splice(8 - delSum, 1); delSum ++;\n  // \"สถานภาพนักศึกษา ณ ปัจจุบัน\" (9), \n  row.json.row.splice(9 - delSum, 1); delSum ++;\n  // \"อาจารย์ที่ปรึกษา\" (10), \n  row.json.row.splice(10 - delSum, 1); delSum ++;\n  // remove \"Email-ส่วนตัว\" (11)\n  // row.json.row.splice(11 - delSum, 1); delSum ++;\n  // \"email-สถาบัน-1\" (12), \n  // row.json.row.splice(12 - delSum, 1); delSum ++;\n  // \"email-สถาบัน-2\" (13), \n  // row.json.row.splice(13 - delSum, 1); delSum ++;\n  // \"email-สถาบัน-3\" (14), \n  row.json.row.splice(14 - delSum, 1); delSum ++;\n  // \"email-สถาบัน-4\" (15)\n  row.json.row.splice(15 - delSum, 1); delSum ++;  \n})\n\nreturn rows;\n\n\n// return $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        96
+      ],
+      "id": "95a027e7-6a4d-4101-9360-d651cf60284b",
+      "name": "Remove unused field"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('Extract info').item.json.year + \"_\" +  $('Extract info').item.json.semester + \"_\" + $('Extract info').item.json.subjectCode + \".xlsx\"}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        96
+      ],
+      "id": "bbbac72d-c1e2-4f70-b713-3fbda1705345",
+      "name": "Write file",
+      "notesInFlow": true,
+      "notes": "path: ./<year_term_code>.xlsx"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ef43e2c8-f1ad-4c40-bcec-ed45f68d77b9",
+              "leftValue": "={{ $json.fullFileExtension }}",
+              "rightValue": "xlsx",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        96
+      ],
+      "id": "6965dbf0-2403-4a87-8d1f-e21f23a1000a",
+      "name": "Does xlsx file?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get all rows\nconst rows = $('xlsx to JSON').all()\n\n// remove first two row\nrows.shift()\nrows.shift()\n\n// return data\nreturn rows"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        96
+      ],
+      "id": "9b02e8f5-fb47-4646-854d-fbdde24d5b71",
+      "name": "Remove first two rows",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// get rows\nconst rows = $input.all()\n\nrows.forEach( (row, index) => {\n  if (index == 0) {\n    // append \"telegram\" field\n    row.json.row.push(\"telegram user id\")\n    row.json.row.push(\"telegram chat id\")\n  } else {\n    // append null telegram\n    row.json.row.push(\"\")\n    row.json.row.push(\"\")\n  }\n  \n})\n\nreturn rows"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        96
+      ],
+      "id": "2aad46cb-f26b-4cd5-9add-aa975507657e",
+      "name": "Append fields"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "={{ $('Extract info').item.json.year + \"_\" +  $('Extract info').item.json.semester + \"_\" + $('Extract info').item.json.subjectCode + \".xlsx\"}}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1456,
+        96
+      ],
+      "id": "8ae8c379-07e4-441c-904c-075503c03a8b",
+      "name": "JSON to xlsx",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "name": "={{ $json.name.split('.')[0] + '_failed.' +  $json.fullFileExtension}}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1DWkRHT7RYXI15JRRx6t_7eqm4A6_ZhPa",
+          "mode": "list",
+          "cachedResultName": "processed",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1DWkRHT7RYXI15JRRx6t_7eqm4A6_ZhPa"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        112,
+        288
+      ],
+      "id": "9862f4f8-c2c1-47c7-adf6-197ac84b4a4e",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "xRkrDIqgCNBr0ana",
+          "name": "drive-001"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Does xlsx file?').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        560,
+        -96
+      ],
+      "id": "73f5ac22-8bb0-4123-a4b8-911300076bd8",
+      "name": "Delete (successed)",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "xRkrDIqgCNBr0ana",
+          "name": "drive-001"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Does xlsx file?').item.json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        336,
+        288
+      ],
+      "id": "6844aec4-c9ed-4232-8a38-5af1d3790bb1",
+      "name": "Delete (failed)",
+      "notesInFlow": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "xRkrDIqgCNBr0ana",
+          "name": "drive-001"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "name": "={{ $json.name.split('.')[0] + '_processed.' + $json.fullFileExtension}}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1DWkRHT7RYXI15JRRx6t_7eqm4A6_ZhPa",
+          "mode": "list",
+          "cachedResultName": "processed",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1DWkRHT7RYXI15JRRx6t_7eqm4A6_ZhPa"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        336,
+        -96
+      ],
+      "id": "701fa872-522d-4728-bfc9-5dbf57d9f79f",
+      "name": "Copy (successed)",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "xRkrDIqgCNBr0ana",
+          "name": "drive-001"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Scan input folder": {
+      "main": [
+        [
+          {
+            "node": "Does xlsx file?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every a minute": {
+      "main": [
+        [
+          {
+            "node": "Scan input folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual": {
+      "main": [
+        [
+          {
+            "node": "Scan input folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "xlsx to JSON": {
+      "main": [
+        [
+          {
+            "node": "Extract info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download xlsx": {
+      "main": [
+        [
+          {
+            "node": "xlsx to JSON",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Copy (successed)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract info": {
+      "main": [
+        [
+          {
+            "node": "Remove first two rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove unused field": {
+      "main": [
+        [
+          {
+            "node": "Append fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Does xlsx file?": {
+      "main": [
+        [
+          {
+            "node": "Download xlsx",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove first two rows": {
+      "main": [
+        [
+          {
+            "node": "Remove unused field",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append fields": {
+      "main": [
+        [
+          {
+            "node": "JSON to xlsx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON to xlsx": {
+      "main": [
+        [
+          {
+            "node": "Write file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Delete (failed)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy (successed)": {
+      "main": [
+        [
+          {
+            "node": "Delete (successed)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "64a9079b-57cf-4c72-8aa1-69f2f7d7446c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "35980e30b8af076815bd35837dcb1ed59c72d8c4da6aadf5121f27c9389c8082"
+  },
+  "id": "OwDWdvVFlCGwh9HS",
+  "tags": [
+    {
+      "createdAt": "2025-08-21T16:11:36.379Z",
+      "updatedAt": "2025-08-21T16:11:36.379Z",
+      "id": "A0GLnKzWHkb2pQSw",
+      "name": "gdrive"
+    },
+    {
+      "createdAt": "2025-08-22T17:03:35.651Z",
+      "updatedAt": "2025-08-24T05:34:39.292Z",
+      "id": "chQ7H9AVYiv3TvOM",
+      "name": "local-storage"
+    }
+  ]
+}

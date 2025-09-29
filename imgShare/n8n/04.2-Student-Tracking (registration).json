@@ -1,0 +1,998 @@
+{
+  "name": "04.2-Student-Tracking (registration)",
+  "nodes": [
+    {
+      "parameters": {
+        "fileSelector": "2568_1_CSI205.xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        1072
+      ],
+      "id": "87df5ef6-3a66-4529-85b4-1fe0b42a9004",
+      "name": "Read files",
+      "notesInFlow": false,
+      "notes": "./data/2568_1_CSI205.xlsx"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        96,
+        1072
+      ],
+      "id": "f9f6a683-cb44-4daa-b0e6-2a3e3b7f05b7",
+      "name": "xlsx to JSON",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        1072
+      ],
+      "id": "5d4bbf56-aae9-4feb-8b1b-888697656fbd",
+      "name": "message",
+      "webhookId": "004b708e-ccd2-4eb7-8f81-442c4e437a50",
+      "credentials": {
+        "telegramApi": {
+          "id": "ippK6hvyvohYYK8D",
+          "name": "telegram (spu_sit_csi205_001_bot)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d58ad513-d389-44f9-8ba2-d56676883617",
+              "leftValue": "={{ $json.program.found }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        544,
+        1072
+      ],
+      "id": "f98ce90f-2fb2-43b8-bcba-0a4ea3a2d95a",
+      "name": "Found id?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get data\nconst data = $input.all()\n\n// telegram id\nconst telegramUserId = $('message').first().json.message.from.id\n\nlet found = false\n\n// scan data\nconst foundData = data.find(d => d.json['row.10'] == telegramUserId)\n\nif (foundData !== undefined) {\n  found = true\n}\nreturn {\n  telegram: { \n    update_id: $('message').first().json.update_id, \n    message: $('message').first().json.message\n  }, \n  data: $input.all(), \n  program: {\n    found,\n    user: foundData\n  }\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        1072
+      ],
+      "id": "08f7b826-a7f4-4438-b9c0-926b741d214f",
+      "name": "Search id"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0ebf3d82-0e64-4f26-b308-d0fef48c5441",
+              "leftValue": "={{ $json.telegram.message.text }}",
+              "rightValue": "/reg",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        1584
+      ],
+      "id": "2ed5501c-f462-4d6d-b817-603835977bc1",
+      "name": "/reg?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get input\nconst data = $input.all()\n\ndata[0].json.program.message += \"/reg <รหัสนักศึกษา> <เบอร์โทร>\\n/reg <รหัสนักศึกษา> <e-mail-ส่วนตัว>\\n/reg <รหัสนักศึกษา> <e-mail-สถาบัน-1>\\n/reg <รหัสนักศึกษา> <e-mail-สถาบัน-2>\\n\"\n\nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2112,
+        1696
+      ],
+      "id": "23809d25-5c3a-416b-b13c-f88346c6c265",
+      "name": "Gen /reg instruction"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get input\nconst data = $input.all()\n\ndata[0].json.program.message = \"ใช้คำสั่ง /reg ไม่ถูกต้อง\\n\"\n\nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        1680
+      ],
+      "id": "f2b31d81-7787-4aee-83c5-8915970ba30f",
+      "name": "Gen (wrong /reg)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get input\nconst data = $input.all()\n\ndata[0].json.program.message = $input.first().json.program.stdName.split(' ')[1] + \" ลงทะเบียนเรียบร้อยแล้ว\\n\"\n\nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2112,
+        1344
+      ],
+      "id": "c7dccb1c-f251-4da9-a9b2-8b3202a378cc",
+      "name": "Say complete"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "2568_1_CSI205.xlsx"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        2112,
+        1120
+      ],
+      "id": "2f0cef70-f263-41ab-bc2d-d24af38a4b46",
+      "name": "JSON to xlsx"
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.first().json.data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        1120
+      ],
+      "id": "e4207be8-c1c6-4857-8fa0-6748078ed8f8",
+      "name": "Prepare to save"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get data\nconst data = $input.all()\n\n// update question\n// data[0].json.program.question = $('Found id?').first().json.telegram.message.text\n\n\n// update tokens\ndata[0].json.program.args = data[0].json.telegram.message.text.split(' ')\n\ndata[0].json.program.found = false\n\n// check \nif (data[0].json.program.args.length !== 3) return data\n\ndata[0].json.program.found = true\n\n\n// return data\nreturn data\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        1488
+      ],
+      "id": "2322c3a2-7684-4f4d-8ab9-96f85e67678c",
+      "name": "Check argument"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get input\nconst data = $input.all()\n\ndata[0].json.program.message = \"ไม่พบข้อมูล กรุณาลงทะเบียน\\n\"\n\nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        1488
+      ],
+      "id": "ef3fd9a9-0507-4d07-9b4c-ff2a11e61ce2",
+      "name": "Gen (no reg) #1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get input\nconst data = $input.all()\n\ndata[0].json.program.message = \"ไม่พบข้อมูล กรุณาลงทะเบียน\\n\"\n\nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1888,
+        1872
+      ],
+      "id": "a9b172f2-088a-4c4f-a670-09844f1775dd",
+      "name": "Gen (no reg) #2"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "2568_1_CSI205.xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2336,
+        1120
+      ],
+      "id": "f6ff6ce2-439b-482f-b5f8-bbf8abf9c03f",
+      "name": "Write file"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=[Role]\nชื่อ ` robot ` เป็นผู้เชี่ยวชาญด้านการพัฒนาซอฟต์แวร์ มีความสามารถในการให้คำแนะนำ สอนและอธิบายเนื้อหาได้อย่างดี\n\n[Task]\nจงตอบคำถามเกี่ยวกับการพัฒนาซอฟต์วแวร์เป็นภาษาไทย ของนักศึกษาระดับปริญญาตรี ชั้นปีที่ 2 พร้อมให้ข้อเสนอแนะตรงประเด็นอย่างละเอียด ระบุที่มาของข้อมูลชัดเจน อย่าคิดไปเอง สุภาพ และสร้างสรรค์ พร้อมยกตัวอย่างชุดคำสั่งถ้าจำเป็น ถ้าหาคำตอบไม่ได้ ให้ตอบว่า `ข้อมูลที่ผมมี ไม่สามารถตอบคำถามนี้ได้` และใช้คำลงท้ายว่า `ครับ` เสมอ\n\n[Context]\nคำนำหน้าชื่อ:\n{{ $json.program.userName.json['row.2'].split(' ')[0] }}\nชื่อนักศึกษา:\n{{ $json.program.userName.json['row.2'].split(' ')[1] }}\nนามสกุลนักศึกษา:\n{{ $json.program.userName.json['row.2'].split(' ')[2] }}\nคณะที่นักศึกษาเรียน:\n{{ $json.program.userName.json['row.3'] }}\nสาขาวิชาที่นักศึกษาเรียน:\n{{ $json.program.userName.json['row.4'] }}\nความรู้พื้นฐานของนักศึกษา:\n- พื้นฐานการสร้าง Web ภาษา HTML และ CSS\n- พื้นฐานการเขียนโปรแกรมภาษา JavaScript เล็กน้อย\nสิ่งที่นักศึกษาอยากทราบหลัก:\n- การพัฒนาด้วย React, Vite, Advanced JavaScript \n\n[Question]\nคำถาม:\n{{ $json.telegram.message.text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        416
+      ],
+      "id": "280a35e4-adbf-4505-bcba-2b873a660c49",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.telegram.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        16,
+        640
+      ],
+      "id": "73f315e2-38b4-44d4-87f5-541d714b3b7f",
+      "name": "Simple Memory",
+      "notesInFlow": true,
+      "notes": "max: 5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        640
+      ],
+      "id": "e7b755c0-cccd-4c25-90c5-d67da087146a",
+      "name": "Ollama",
+      "notesInFlow": true,
+      "credentials": {
+        "ollamaApi": {
+          "id": "yMk2y0oMDHLceYnr",
+          "name": "ollama-iot.spu.ac.th"
+        }
+      },
+      "notes": "llama3.2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const program = $('Found id?').first().json.program\n\nprogram.question = $('Found id?').first().json.telegram.message.text\nprogram.message = $input.first().json.output + \"\\n\"\n\nreturn {\n  telegram: $('Found id?').first().json.telegram,\n  data: $('Found id?').first().json.data,\n  program\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        416
+      ],
+      "id": "f10dfe8a-cebc-4c00-842f-694f6a9d7a65",
+      "name": "Data alignment"
+    },
+    {
+      "parameters": {
+        "jsCode": "const program = $('Found id?').first().json.program\n\nprogram.question = $('Found id?').first().json.telegram.message.text\nprogram.message = $input.first().json.program.user.json['row.2'].split(' ')[1] + \" ขอโทษด้วย!\\nปัญญาประดิษฐ์ยังไม่ติดตั้ง\\n\"\n\nreturn {\n  telegram: $('Found id?').first().json.telegram,\n  data: $('Found id?').first().json.data,\n  program\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        928
+      ],
+      "id": "8440c480-8ab2-41b4-bbdc-36b2bf99e5b2",
+      "name": "No AI module"
+    },
+    {
+      "parameters": {
+        "jsCode": "const program = $('Found id?').first().json.program\n\nprogram.question = $('Found id?').first().json.telegram.message.text\nprogram.message = $input.first().json.program.user.json['row.2'].split(' ')[1] + \" ปัญญาประดิษฐ์ทำงานช้า\\nกรุณารอสักครู่...\\n \"\n\nreturn {\n  telegram: $('Found id?').first().json.telegram,\n  data: $('Found id?').first().json.data,\n  program\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        160
+      ],
+      "id": "7bbb4be7-fe60-4db8-8406-59152edc032a",
+      "name": "Long waiting"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        288
+      ],
+      "id": "ef945784-dba2-44cb-9188-7188882b1702",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        448,
+        288
+      ],
+      "id": "1d0623c5-9715-4a00-9b5d-f48e06f94f3b",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "812ac24b-53e9-4587-a558-7a6006a8d28b",
+              "leftValue": "={{ $json.program.found }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1216,
+        1488
+      ],
+      "id": "68e9c259-7c79-48ca-9838-3fa39bf3de93",
+      "name": "/reg correct?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.all();\n\ninput[0].json.program.found = false\n\n// check new id\nif (input[0].json.telegram.message.chat.id !== input[0].json.program.user.json['row.11']) {\n  // update \n  input[0].json.program.user.json['row.11'] = input[0].json.telegram.message.chat.id \n\n  input[0].json.program.found = true\n}\n\nreturn input;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        1072
+      ],
+      "id": "90172ec5-9580-4dd8-9dae-cf9ed38fe68d",
+      "name": "Search and set (chat id)"
+    },
+    {
+      "parameters": {
+        "jsCode": "// get dat\nconst input = $input.all()\n// get arguments\nconst args = input[0].json.program.args\n\ninput[0].json.program.found = false\n\n// get data\nconst data = input[0].json.data\n\n// scan data\nconst foundData = data.find(d => \n  d.json['row.1'] == args[1] && (\n    d.json['row.6'] == args[2] ||\n    d.json['row.7'] == args[2] ||\n    d.json['row.8'] == args[2] ||\n    d.json['row.9'] == args[2]\n  )\n)\nif (foundData === undefined) return input\n\n// updata telegram\nfoundData.json['row.10'] = input[0].json.telegram.message.from.id\nfoundData.json['row.11'] = input[0].json.telegram.message.chat.id\n\n// updata success\ninput[0].json.program.found = true\n\n// get student name\ninput[0].json.program.stdName = foundData.json['row.2']\n\nreturn input"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        1312
+      ],
+      "id": "d9a2df5b-4f43-4451-b76e-dbe69f497784",
+      "name": "Search and Set (args)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d7ed3d12-e9cb-4423-a232-e3018432d5aa",
+              "leftValue": "={{ $json.program.found }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1664,
+        1312
+      ],
+      "id": "3ba9e52c-782a-40ae-9c70-c8a66e00ac10",
+      "name": "Found args?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e9dbac67-131d-4b01-b4bb-72e26dbd9080",
+              "leftValue": "={{ $json.program.found }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1664,
+        1072
+      ],
+      "id": "7464508a-756b-49ff-938f-08b4447284c9",
+      "name": "New chat id?",
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.telegram.message.chat.id }}",
+        "text": "={{ $json.program.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1216,
+        832
+      ],
+      "id": "4e97ad43-966c-40c6-98da-85e9a76a7052",
+      "name": "Send message #1",
+      "webhookId": "4572e3c0-271d-4ed1-b488-527a702b1c0c",
+      "notesInFlow": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "ippK6hvyvohYYK8D",
+          "name": "telegram (spu_sit_csi205_001_bot)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.telegram.message.chat.id }}",
+        "text": "={{ $json.program.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2336,
+        1536
+      ],
+      "id": "eebe61fe-9446-4337-970c-2de96627fa86",
+      "name": "Send message #2",
+      "webhookId": "4572e3c0-271d-4ed1-b488-527a702b1c0c",
+      "notesInFlow": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "ippK6hvyvohYYK8D",
+          "name": "telegram (spu_sit_csi205_001_bot)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7810b0de-837c-47d6-bbf5-07274d034d2e",
+              "leftValue": "={{ $json.telegram.message.text }}",
+              "rightValue": "/start",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        832
+      ],
+      "id": "b518f34a-9704-4bb3-b47f-9a822de709dd",
+      "name": "/start ?"
+    },
+    {
+      "parameters": {
+        "jsCode": "const program = $('Found id?').first().json.program\n\nprogram.question = $('Found id?').first().json.telegram.message.text\nprogram.message = \"สวัสดี \" + $input.first().json.program.user.json['row.2'].split(' ')[1] + \"\\n\"\n\nreturn {\n  telegram: $('Found id?').first().json.telegram,\n  data: $('Found id?').first().json.data,\n  program\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        992,
+        736
+      ],
+      "id": "99f35fa7-b191-449e-967e-4fca563ff56e",
+      "name": "No AI module1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Read files": {
+      "main": [
+        [
+          {
+            "node": "xlsx to JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "xlsx to JSON": {
+      "main": [
+        [
+          {
+            "node": "Search id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "message": {
+      "main": [
+        [
+          {
+            "node": "Read files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Found id?": {
+      "main": [
+        [
+          {
+            "node": "Search and set (chat id)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "/start ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "/reg?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search id": {
+      "main": [
+        [
+          {
+            "node": "Found id?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "/reg?": {
+      "main": [
+        [
+          {
+            "node": "Check argument",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gen (no reg) #2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gen /reg instruction": {
+      "main": [
+        [
+          {
+            "node": "Send message #2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gen (wrong /reg)": {
+      "main": [
+        [
+          {
+            "node": "Gen /reg instruction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Say complete": {
+      "main": [
+        [
+          {
+            "node": "Send message #2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare to save": {
+      "main": [
+        [
+          {
+            "node": "JSON to xlsx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check argument": {
+      "main": [
+        [
+          {
+            "node": "/reg correct?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gen (no reg) #1": {
+      "main": [
+        [
+          {
+            "node": "Gen /reg instruction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gen (no reg) #2": {
+      "main": [
+        [
+          {
+            "node": "Gen /reg instruction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON to xlsx": {
+      "main": [
+        [
+          {
+            "node": "Write file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Data alignment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data alignment": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No AI module": {
+      "main": [
+        [
+          {
+            "node": "Send message #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Long waiting": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Long waiting",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "/reg correct?": {
+      "main": [
+        [
+          {
+            "node": "Search and Set (args)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gen (wrong /reg)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search and set (chat id)": {
+      "main": [
+        [
+          {
+            "node": "New chat id?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search and Set (args)": {
+      "main": [
+        [
+          {
+            "node": "Found args?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Found args?": {
+      "main": [
+        [
+          {
+            "node": "Prepare to save",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Say complete",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gen (no reg) #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New chat id?": {
+      "main": [
+        [
+          {
+            "node": "Prepare to save",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "No Operation, do nothing1": {
+      "main": [
+        []
+      ]
+    },
+    "/start ?": {
+      "main": [
+        [
+          {
+            "node": "No AI module1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No AI module",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No AI module1": {
+      "main": [
+        [
+          {
+            "node": "Send message #1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "64a9079b-57cf-4c72-8aa1-69f2f7d7446c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "35980e30b8af076815bd35837dcb1ed59c72d8c4da6aadf5121f27c9389c8082"
+  },
+  "id": "NLwCjmqHlM3qMFRz",
+  "tags": [
+    {
+      "createdAt": "2025-08-21T16:12:03.200Z",
+      "updatedAt": "2025-08-21T16:12:03.200Z",
+      "id": "IVB7l0aOHWXPGBoH",
+      "name": "telegram"
+    },
+    {
+      "createdAt": "2025-08-21T16:07:39.132Z",
+      "updatedAt": "2025-08-21T16:07:39.132Z",
+      "id": "QG2hvbkFZtbQFgPe",
+      "name": "agent"
+    },
+    {
+      "createdAt": "2025-08-22T17:03:35.651Z",
+      "updatedAt": "2025-08-24T05:34:39.292Z",
+      "id": "chQ7H9AVYiv3TvOM",
+      "name": "local-storage"
+    }
+  ]
+}

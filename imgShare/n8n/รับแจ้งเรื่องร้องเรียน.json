@@ -1,0 +1,262 @@
+{
+  "name": "รับแจ้งเรื่องร้องเรียน",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "แบบฟอร์มรับเรื่องร้องเรียน",
+        "formDescription": "นักศึกษากรอกเรื่องร้องเรียน",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "รหัสนักศึกษา",
+              "fieldType": "number",
+              "placeholder": "ใส่เลขรหัสนักศึกษา",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "ชื่อ - นามสกุล ",
+              "placeholder": "นาย xxx  นามสกุล xxxx",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "ระดับความรุนแรง ",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "High"
+                  },
+                  {
+                    "option": "Medium"
+                  },
+                  {
+                    "option": "Low"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "รายละเอียดเรื่องร้องเรียน ",
+              "placeholder": "กรอกรายละเอียด ",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        80
+      ],
+      "id": "afcbae1d-fb9d-427b-900a-ba55c7bd10ea",
+      "name": "On form submission",
+      "webhookId": "c8ffd43c-06e8-4ea4-9879-da761afe4b5f"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gDjavETzn1ZN04bzsgiwq2PjJ-0MOnF8LqOFSsY6_1A",
+          "mode": "list",
+          "cachedResultName": "รายงานเรื่องร้องเรียน",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gDjavETzn1ZN04bzsgiwq2PjJ-0MOnF8LqOFSsY6_1A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gDjavETzn1ZN04bzsgiwq2PjJ-0MOnF8LqOFSsY6_1A/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "รหัสนักศึกษา": "={{ $json['รหัสนักศึกษา'] }}",
+            "ชื่อ - นามสกุล": "={{ $json['ชื่อ - นามสกุล '] }}",
+            "ระดับความรุนแรง": "={{ $json['ระดับความรุนแรง '] }}",
+            "รายละเอียดเรื่องร้องเรียน": "={{ $json['รายละเอียดเรื่องร้องเรียน '] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "รหัสนักศึกษา",
+              "displayName": "รหัสนักศึกษา",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ชื่อ - นามสกุล",
+              "displayName": "ชื่อ - นามสกุล",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ระดับความรุนแรง",
+              "displayName": "ระดับความรุนแรง",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "รายละเอียดเรื่องร้องเรียน",
+              "displayName": "รายละเอียดเรื่องร้องเรียน",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Condition",
+              "displayName": "Condition",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -48,
+        80
+      ],
+      "id": "653bed91-7297-4336-aa06-ed5ae2fa4b34",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lgb0IQn1mJf4LBbv",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "paralee.ma@spu.ac.th",
+        "subject": "เรื่องร้องเรียนจากนักศึกษา (High level) ",
+        "message": "รายละเอียดเรื่องร้องเรียน  https://docs.google.com/spreadsheets/d/1gDjavETzn1ZN04bzsgiwq2PjJ-0MOnF8LqOFSsY6_1A/edit?usp=sharing",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        336,
+        -32
+      ],
+      "id": "62d68fd8-3387-4ae6-9ae1-592edb5a03b7",
+      "name": "Send a message",
+      "webhookId": "91ec79b9-4eb7-4bf1-ba50-cb6d96ac8c13",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yOVbmlpGHq9km7bR",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b32f7672-ad13-4713-8e3c-936ab1706331",
+              "leftValue": "={{ $json['ระดับความรุนแรง'] }}",
+              "rightValue": "=High",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        80
+      ],
+      "id": "6747d202-f21d-4b10-bccb-bd9da1a7480d",
+      "name": "If"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5ab578e9-b82f-495b-8e2b-83b3030b19b6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "08e5372234c31f7410b34988b4ed9ad772109b70c19bb43fd587640dd2f991d8"
+  },
+  "id": "JgMvOX0PS44B1DcW",
+  "tags": []
+}

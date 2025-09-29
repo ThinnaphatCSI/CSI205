@@ -1,0 +1,167 @@
+{
+  "name": "01-เพื่อนพูดคุย",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nI'm Robot. How can I assist you today?",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "cea3fc4d-d030-466e-8473-b9192c1ebc80",
+      "name": "When chat message received",
+      "webhookId": "0d4318e7-c106-493a-92dd-e2a10e56e75b"
+    },
+    {
+      "parameters": {
+        "options": {
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        0
+      ],
+      "id": "d3ec96fd-aa2d-48d1-997c-d7359833bbbc",
+      "name": "AI Agent",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": false,
+      "notesInFlow": true,
+      "notes": "เพื่อนพูดคุย"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        208
+      ],
+      "id": "e1ce671e-f1a8-4164-a9fd-cbbda82b1db3",
+      "name": "Simple Memory",
+      "notesInFlow": true,
+      "notes": "Max: 5"
+    },
+    {
+      "parameters": {
+        "content": "## ❗เตือน ollama credential url\n✘ http://localhost:11434\n✔ http://host.docker.internal:11434",
+        "height": 96,
+        "width": 400,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        528,
+        208
+      ],
+      "typeVersion": 1,
+      "id": "49d8d97b-b34e-41a6-8646-8a5126cc5aa7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        240,
+        208
+      ],
+      "id": "8bd123bd-d67d-4e62-885c-fc151c1f681c",
+      "name": "Ollama Chat Model",
+      "notesInFlow": true,
+      "credentials": {
+        "ollamaApi": {
+          "id": "PJfRGHwVV4pca6Ir",
+          "name": "Ollama account"
+        }
+      },
+      "notes": "llama3.2"
+    },
+    {
+      "parameters": {
+        "content": "## Chat Usage\n- เปลี่ยน slider จาก Inactive เป็น Active\n- เปิด Browser ไปที่ http://localhost:5678/webhook/0d4318e7-c106-493a-92dd-e2a10e56e75b/chat",
+        "height": 112,
+        "width": 704,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        224,
+        -144
+      ],
+      "typeVersion": 1,
+      "id": "624fb040-5385-49a9-8582-10b47c07ae97",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ed618f0c-c1ff-428b-b68a-0802cee45e65",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "27164b2c09ed1a85e07690db378fa2ee280393e41219e96802631db6ccfacc28"
+  },
+  "id": "hyIFPfvsSpVUqgiL",
+  "tags": [
+    {
+      "createdAt": "2025-08-16T04:24:24.864Z",
+      "updatedAt": "2025-08-16T04:24:24.864Z",
+      "id": "75Au47hCKxlRNdLR",
+      "name": "chat"
+    },
+    {
+      "createdAt": "2025-08-16T04:24:07.129Z",
+      "updatedAt": "2025-08-16T04:24:07.129Z",
+      "id": "JjfkFchjZLmh9vp0",
+      "name": "agent"
+    }
+  ]
+}

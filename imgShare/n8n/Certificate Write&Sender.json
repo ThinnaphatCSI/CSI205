@@ -1,0 +1,369 @@
+{
+  "name": "Certificate Write&Sender",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "ลงทะเบียนรับ Certificate",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Surname",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Lastname",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email สำหรับส่ง Cert",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "buttonLabel": "Submit"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -64,
+        16
+      ],
+      "id": "7d23f9d5-aaa9-480a-b36d-fbe44a7d378c",
+      "name": "On form submission",
+      "webhookId": "f25d5701-9181-4f30-845d-4c3f4c186b04"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "*.png",
+        "filter": {
+          "driveId": {
+            "__rl": true,
+            "value": "My Drive",
+            "mode": "list",
+            "cachedResultName": "My Drive",
+            "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "value": "1KMuY7G01OU14MWtUhOvmUSy1e6qi5cf-",
+            "mode": "list",
+            "cachedResultName": "n8n_Test",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1KMuY7G01OU14MWtUhOvmUSy1e6qi5cf-"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        144,
+        -208
+      ],
+      "id": "da261524-7047-49a4-86f4-4bfa11f70dfb",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "JxIXAJCxycso2IbH",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "background"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        336,
+        -208
+      ],
+      "id": "3dc33a94-22f6-4d64-9fb3-9d17deeece0a",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "JxIXAJCxycso2IbH",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\nconst Fullname = $('On form submission').first().json.Surname + \" \" + $('On form submission').first().json.Lastname;\n// for (const item of Fullname) {\nconst W_img = 1261;\n//   const text = item;\nconst text = Fullname.length;\n\n// สมมติว่าค่าเฉลี่ยต่อ 1 ตัวอักษร = 20px (ขึ้นกับฟอนต์จริง)\nconst avgCharWidth = 20;\nconst W_text = text * avgCharWidth;\n\n// สมการจัดกึ่งกลาง\nconst x_start = (W_img - W_text) / 2;\n\nresults.push({\n  json:{\n    Fullname: Fullname,\n    text: text,\n    textWidth: W_text,\n    xStart: Math.round(x_start)\n  }\n});\n// }\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        144,
+        16
+      ],
+      "id": "0517992e-4dd0-4276-8588-acdf41a63e8f",
+      "name": "Code",
+      "notes": "Calculate center from lenght of fullname"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        512,
+        0
+      ],
+      "id": "aca6da6c-3ff8-48d0-b67d-b9f356e92a94",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "dataPropertyName": "background",
+        "text": "={{ $json.Fullname }}",
+        "fontSize": 45,
+        "positionX": "={{ $json.xStart }}",
+        "positionY": 470,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.editImage",
+      "typeVersion": 1,
+      "position": [
+        704,
+        0
+      ],
+      "id": "45a474b7-402d-4206-a74c-882186d4e590",
+      "name": "Edit Image1"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('On form submission').item.json['Email สำหรับส่ง Cert'] }}",
+        "subject": "SPU Mini-Hackaton Certificate",
+        "message": "=<div>\n  <p>Taken from wikpedia</p>\n  <img src=\"data:image/png;base64,{{ $json.image }}\" alt=\"Red dot\" />\n</div>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1104,
+        0
+      ],
+      "id": "2c21b802-5cc2-4e6b-bb34-53e39dc257a6",
+      "name": "Send a message",
+      "webhookId": "6c7ad1a9-7555-4ad3-9f45-6ac032194688",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "fi21eSfmZPQ26f93",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "background",
+        "destinationKey": "image",
+        "options": {}
+      },
+      "id": "955903e9-02fb-4322-81ac-d64554978522",
+      "name": "Convert image to base64",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        880,
+        0
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Read and download cert form from google drive\nGoogle Credential\n",
+        "height": 256,
+        "width": 384
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -320
+      ],
+      "id": "6d9764ae-4fee-4e96-96f9-564b7606c04c",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\n## Calculate for write fullname at center of image\nJavascript",
+        "height": 384,
+        "width": 176,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        112,
+        0
+      ],
+      "id": "212de087-2585-4a82-9b0d-c9e9cd27adc2",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Write fullname over image and convert to base64 for send to email",
+        "height": 320,
+        "width": 384,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        656,
+        -144
+      ],
+      "id": "85dee68e-0bd9-41f7-a6fd-03e24fbcff8d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Send email\nGmail credential",
+        "height": 320,
+        "width": 208,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        -144
+      ],
+      "id": "7367597d-2d4a-49db-823a-9f1830a5f828",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "\n\n\n\n\n\n\n\n\n\n\n\n## Form Submition for user",
+        "height": 288,
+        "width": 192,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        0
+      ],
+      "id": "10c30c55-ec45-4b15-a70c-70cde159065a",
+      "name": "Sticky Note4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Image1": {
+      "main": [
+        [
+          {
+            "node": "Convert image to base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Convert image to base64": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c4bc4da5-224d-4903-84b6-afdb1d34bc4c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d614174e338025d2abdae7c558dd337a9315ea0dde55666f8b8be75bf03ad8ca"
+  },
+  "id": "88wgA57BBxIGMB0G",
+  "tags": []
+}

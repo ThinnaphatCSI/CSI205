@@ -1,0 +1,295 @@
+{
+  "name": "รับสมัครงาน",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "แบบฟอร์มรับสมัครงาน",
+        "formDescription": "จงกรอกข้อมูลของคุณในแบบฟอร์มรับสมัครงาน",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Email ผู้สมัครงาน",
+              "fieldType": "email",
+              "placeholder": "xxxx@gmail.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "ชือ - นามสกุล",
+              "placeholder": "นาย/นางสาว  ชื่อ   นามสกุล",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "ระดับการศึกษา",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "มัธยมศึกษา"
+                  },
+                  {
+                    "option": "ปริญญาตรี "
+                  },
+                  {
+                    "option": "บัณฑิตศึกษา"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "40af2215-cfa2-4747-af6f-7dd4172cec42",
+      "name": "On form submission",
+      "webhookId": "ec187ef9-423b-43eb-9b56-dd9abb713385"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1yXetvWn5N5f2VNwj6kNPGpRfqAu6ql7cEhVWqpBnJBU",
+          "mode": "list",
+          "cachedResultName": "สมัครงาน",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yXetvWn5N5f2VNwj6kNPGpRfqAu6ql7cEhVWqpBnJBU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yXetvWn5N5f2VNwj6kNPGpRfqAu6ql7cEhVWqpBnJBU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email ผู้สมัครงาน": "={{ $json['Email ผู้สมัครงาน'] }}",
+            "ชือ - นามสกุล": "={{ $json['ชือ - นามสกุล'] }}",
+            "ระดับการศึกษา": "={{ $json['ระดับการศึกษา'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Email ผู้สมัครงาน",
+              "displayName": "Email ผู้สมัครงาน",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ชือ - นามสกุล",
+              "displayName": "ชือ - นามสกุล",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ระดับการศึกษา",
+              "displayName": "ระดับการศึกษา",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2250ef39-d46f-416c-ac46-93aea13ebea8",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lgb0IQn1mJf4LBbv",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c275469c-0fb6-4198-b882-b60c2588d91a",
+              "leftValue": "={{ $json['ระดับการศึกษา'] }}",
+              "rightValue": "บัณฑิตศึกษา",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "53870ae6-f886-4f8d-9849-640df299d666",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Email ผู้สมัครงาน'] }}",
+        "subject": "สมัครงานบริษัท SPU ",
+        "message": "ขอบคุณมากค่ะ ทางบริษัทจะติดต่อกลับไปถ้าผ่านการพิจารณา ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        624,
+        96
+      ],
+      "id": "83c60ef4-1b83-446a-b447-e192089a5943",
+      "name": "Send a message",
+      "webhookId": "0defe3ba-6823-44fe-b4af-6e851ea97ea3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yOVbmlpGHq9km7bR",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Email ผู้สมัครงาน'] }}",
+        "subject": "สมัครงานบริษัท SPU ",
+        "message": "ขอบคุณสำหรับใบสมัคร  รบกวนเตรียมเอกสารสัมภาษณ์กับฝ่ายบุคคล (HR) ดังนี้ \n\n1.สำเนาบัตรประชาชน: ใช้ยืนยันตัวตนของผู้สมัคร. \n2.สำเนาทะเบียนบ้าน: ใช้ยืนยันที่อยู่ของผู้สมัคร. \n3.สำเนาวุฒิการศึกษา: ใช้แสดงคุณวุฒิทางการศึกษาของผู้สมัคร เช่น ใบปริญญาบัตร หรือ Transcript. \n4.รูปถ่าย: ควรเป็นรูปถ่ายหน้าตรง สุภาพ ขนาด 1 หรือ 2 นิ้ว. \n5.เรซูเม่ (Resume): เป็นประวัติส่วนตัวและประวัติการทำงานของผู้สมัคร ควรมีข้อมูลการติดต่อ, ประวัติการศึกษา, 6.ประสบการณ์ทำงาน, และทักษะต่างๆ. \n7.หนังสือรับรองการทำงาน (ถ้ามี): ใช้แสดงประสบการณ์ทำงานที่ผ่านมา. \n8.ผลการสอบวัดระดับภาษาอังกฤษ (ถ้ามี): เช่น TOEIC, TOEFL, หรือ IELTS. \n9.เอกสารอื่นๆ ที่เกี่ยวข้องกับตำแหน่งงาน: เช่น Portfolio, ใบประกาศนียบัตร, หรือใบรับรองกิจกรรม. \n10.จดหมายเชิญสัมภาษณ์: หากมี. \n11.เอกสารการฉีดวัคซีนโควิด-19 (ถ้ามี): ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        624,
+        -96
+      ],
+      "id": "9ef850c3-bf91-4779-ab3b-fa8e52170e62",
+      "name": "Send a message1",
+      "webhookId": "8ca5622d-8bdc-4bdf-8a45-fad2d869c6e8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yOVbmlpGHq9km7bR",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "suparoekc@yahoo.com",
+        "subject": "พนักงานที่ผ่านคุณสมบัติ มาขอรับการสัมภาษณ์ ",
+        "message": "เรียนผู้จัดการฝ่าย Business Development \n\nตอนนี้มีผู้สมัครมีคุณบัติตามที่ท่านได้ระบุ รบกวนแจ้งกลับฝ่าย HR ในวัน-เวลา ที่สะดวกสำหรับการนัดสัมภาษณ์ เพื่อทำการนัดหมายต่อไป \n\nด้วยความเคารพ \nผู้จัดการฝ่าย HR ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        832,
+        -96
+      ],
+      "id": "dea28369-d924-46a8-95b3-a4ee22dbcc7e",
+      "name": "Send a message2",
+      "webhookId": "47d60a74-21db-46a7-bf7e-3ce0eaef106e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "yOVbmlpGHq9km7bR",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "51cf1907-3f35-4b2b-8003-9cd597ff81b2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "08e5372234c31f7410b34988b4ed9ad772109b70c19bb43fd587640dd2f991d8"
+  },
+  "id": "t8Txy4ohGCOTiQu7",
+  "tags": []
+}

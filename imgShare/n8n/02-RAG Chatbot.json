@@ -1,0 +1,425 @@
+{
+  "name": "02-RAG Chatbot",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "เลือกไฟล์ PDF ",
+        "formDescription": "เลือกไฟล์ PDF สำหรับสร้าง RAG (1 ไฟล์)",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "เลือกไฟล์ PDF",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".pdf",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -832,
+        0
+      ],
+      "id": "65d218cb-ca49-4b57-9353-998003977518",
+      "name": "On form submission",
+      "webhookId": "c5df0a66-d084-4a5f-ad4a-4ac37e2bd19e"
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {
+          "splitPages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -528,
+        192
+      ],
+      "id": "5cd19dcb-3831-4672-9b4e-6f49905833c1",
+      "name": "Default Data Loader",
+      "notesInFlow": true,
+      "notes": "1000 char, 200 overlap"
+    },
+    {
+      "parameters": {
+        "content": "## Qdrant Container\nPull: **docker pull qdrant/qdrant**\nRun: **docker run -d --name qdrant -p 6333:6333 -v ./qdrant_data:/qdrant/storage qdrant/qdrant**\n## Qdrant credential\napi: none\nurl: **http://host.docker.internal:6333**\n## Dashboard\nurl: http://localhost:6333/dashboard",
+        "height": 256,
+        "width": 784,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -880,
+        384
+      ],
+      "typeVersion": 1,
+      "id": "6161dfe7-0ad6-4ea3-b469-20adcf4f5baa",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## สร้าง RAG จากไฟล์ PDF (1 ไฟล์)",
+        "height": 416,
+        "width": 784,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -880,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "f4ea7ea3-0022-4177-9f1c-95a4ba5ce652",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi, you can ask me all about Software Development, but in English please!",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1552,
+        0
+      ],
+      "id": "ddbc6bf0-6710-4d32-97a4-795db9132707",
+      "name": "When chat message received",
+      "webhookId": "51628928-7d0c-4ce1-a3d2-e5de2f721756"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=หน้าที่\nคุณเป็นผู้ช่วยที่สามารถตอบคำถามได้เฉพาะข้อมูลที่ดึงมาจาก RAG Tool เท่านั้น ห้ามตอบจากความรู้ทั่วไปของคุณเอง\n\nกฎสำคัญ\n1. หากคำตอบไม่พบในข้อมูลที่ RAG คืนมา ให้ตอบว่า \"ไม่พบข้อมูลในฐานความรู้\"\n2. อย่าเดาหรือสร้างคำตอบขึ้นเอง\n3. หากมีข้อมูล ให้สรุปอย่างกระชับและตรงประเด็น พร้อมอ้างอิงส่วนที่เกี่ยวข้องจากข้อมูล\n\nคำถามผู้ใช้\n{{ $json.chatInput }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -1344,
+        0
+      ],
+      "id": "4a57846f-3eb1-436b-bb77-b995630b0fcb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -1504,
+        192
+      ],
+      "id": "87bf32dd-c071-46a2-8d2f-6c447cf1bac8",
+      "name": "Ollama Chat Model",
+      "notesInFlow": true,
+      "credentials": {
+        "ollamaApi": {
+          "id": "PJfRGHwVV4pca6Ir",
+          "name": "Ollama account"
+        }
+      },
+      "notes": "llama3.2:latest"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1344,
+        192
+      ],
+      "id": "4587a993-7bdd-4047-9306-aab43290cee6",
+      "name": "Simple Memory",
+      "notesInFlow": true,
+      "notes": "Max: 5"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Use to fetch knowledge from the vector database",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "rag",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        -1200,
+        192
+      ],
+      "id": "ae4a43d7-d20d-47e9-a01e-ab9f633c35a4",
+      "name": "Qdrant Vector Store (retrieval)",
+      "notesInFlow": true,
+      "credentials": {
+        "qdrantApi": {
+          "id": "7tRhw9wAfSSmGW8D",
+          "name": "QdrantApi account"
+        }
+      },
+      "notes": "Rag: rag"
+    },
+    {
+      "parameters": {
+        "content": "## RAG Chatbot",
+        "height": 560,
+        "width": 688,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1600,
+        -64
+      ],
+      "typeVersion": 1,
+      "id": "6d514e0f-179a-4d06-9377-8fb876deed1e",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "rag",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        -640,
+        0
+      ],
+      "id": "a7bb4533-de20-444f-9398-e3e64ad4adb0",
+      "name": "Qdrant Vector Store (insert)",
+      "notesInFlow": true,
+      "credentials": {
+        "qdrantApi": {
+          "id": "7tRhw9wAfSSmGW8D",
+          "name": "QdrantApi account"
+        }
+      },
+      "notes": "rag id: rag"
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        192
+      ],
+      "id": "8f696283-4eeb-4132-883c-285027c89fd9",
+      "name": "Embeddings Ollama 1",
+      "notesInFlow": true,
+      "credentials": {
+        "ollamaApi": {
+          "id": "PJfRGHwVV4pca6Ir",
+          "name": "Ollama account"
+        }
+      },
+      "notes": "nomic-embed-text:latest"
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        336
+      ],
+      "id": "6ee7b7d6-fdc4-41b9-bf45-195c34204b3f",
+      "name": "Embeddings Ollama 2",
+      "notesInFlow": true,
+      "credentials": {
+        "ollamaApi": {
+          "id": "PJfRGHwVV4pca6Ir",
+          "name": "Ollama account"
+        }
+      },
+      "notes": "nomic-embed-text:latest"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Complete",
+        "completionMessage": "สร้าง RAG เรียบร้อยแล้ว\nsee: <a href=\"http://localhost:6333/dashboard#/collections\">http://localhost:6333/dashboard#/collections</a>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        0
+      ],
+      "id": "818d3dce-3c7c-404b-839b-23b36809ca57",
+      "name": "Form",
+      "webhookId": "5b99d8e1-0f8e-4355-9fac-f9bd4b20fe2c"
+    },
+    {
+      "parameters": {
+        "content": "## Chat Usage\n- เปลี่ยน slider จาก Inactive เป็น Active\n- เปิด Browser ไปที่ http://localhost:5678/webhook/51628928-7d0c-4ce1-a3d2-e5de2f721756/chat",
+        "height": 112,
+        "width": 688,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1600,
+        528
+      ],
+      "typeVersion": 1,
+      "id": "148e4ce2-f46d-40f5-82a4-0a07fe7e5dd5",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store (insert)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store (insert)",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store (retrieval)": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama 1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store (insert)",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama 2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store (retrieval)",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store (insert)": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b248db85-4b08-44bb-9dfd-8851d220ffaa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "27164b2c09ed1a85e07690db378fa2ee280393e41219e96802631db6ccfacc28"
+  },
+  "id": "6Oj9vDgoPm2YgJ04",
+  "tags": [
+    {
+      "createdAt": "2025-08-16T06:02:53.024Z",
+      "updatedAt": "2025-08-16T06:02:53.024Z",
+      "id": "6zJbp6he4ZfBphVj",
+      "name": "form"
+    },
+    {
+      "createdAt": "2025-08-16T06:02:55.728Z",
+      "updatedAt": "2025-08-16T06:02:55.728Z",
+      "id": "I37DPVn5vay56Tg7",
+      "name": "rag"
+    },
+    {
+      "createdAt": "2025-08-16T04:24:07.129Z",
+      "updatedAt": "2025-08-16T04:24:07.129Z",
+      "id": "JjfkFchjZLmh9vp0",
+      "name": "agent"
+    }
+  ]
+}

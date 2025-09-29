@@ -1,0 +1,222 @@
+{
+  "name": "03-ตรวจขอสอบอัตนัย",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "ข้อสอบอัตนัย",
+        "formDescription": "ข้อสอบอัตนัย",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Function Component คืออะไร, มีองค์ประกอบอะไร, อธิบายแตละองค์ประกอบพอสังเขป (10 คะแนน)",
+              "fieldType": "textarea",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        16,
+        0
+      ],
+      "id": "4ca865c8-c1f5-43f6-9405-328b3600774d",
+      "name": "On form submission",
+      "webhookId": "7ca515b5-53c3-49e5-9cc0-a46842078d6b",
+      "notesInFlow": true,
+      "notes": "จำลองคำตอบอัตนัย"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=[Role]\nคุณคือผู้ตรวจข้อสอบผู้เชี่ยวชาญด้านการพัฒนาซอฟต์แวร์ และมีความสามารถในการประเมินคำตอบอัตนัยตามเกณฑ์ที่กำหนด\n\n[Task]\nจงตรวจคำตอบของนักเรียนสำหรับคำถามต่อไปนี้ โดยใช้เกณฑ์การให้คะแนน (RUBRIC) ที่กำหนดให้ และให้คะแนนเต็ม 10 พร้อมให้ข้อเสนอแนะที่ละเอียดและสร้างสรรค์ และตอบเป็นภาษาไทยเท่านั้น\n\n[Context]\nนี่คือข้อมูลประกอบ:\n\nคำถาม: \"Function Component คืออะไร, มีองค์ประกอบอะไร, อธิบายแตละองค์ประกอบพอสังเขป (10 คะแนน)\"\n\nRUBRIC:\n| เกณฑ์การประเมิน | คะแนนเต็ม (10) |\n| - | - |\n| 1. ความหมายของ React Function Component | 2 |\n| 2. มี keyword สำคัญ ได้แก่ JSX, props, Hooks, Stateless, Reusable | 4 |\n| 3. มีการอธิบายตาม keywords ในข้อ 2 ได้ถูกต้อง | 4 |\n\n[Student's Answer to be Graded]\n{{ $json['Function Component คืออะไร, มีองค์ประกอบอะไร, อธิบายแตละองค์ประกอบพอสังเขป (10 คะแนน)'] }}\n\n[Output Format]\n\nไม่เอาเป็นข้อความ แต่ต้องการ JSON เท่านั้น ตามกำหนดนี้\n\n{\n  \"max\": คะแนนเต็ม,\n  \"point\": คะแนนที่ได้,\n  \"items\": [\n    {\n      \"max\": คะแนนเต็ม หัวข้อที่ 1,\n      \"point\": คะแนนที่ได้ หัวข้อที่ 1,\n      \"reason\": เหตุผล หัวข้อที่ 1 ไม่เกิน 30 คำ\n    }, \n    {\n      \"max\": คะแนนเต็ม หัวข้อที่ 2,\n      \"point\": คะแนนที่ได้ หัวข้อที่ 2,\n      \"reason\": เหตุผล หัวข้อที่ 2 ไม่เกิน 30 คำ\n    }, \n    {\n      \"max\": คะแนนเต็ม ข้อที่ 3,\n      \"point\": คะแนนที่ได้ หัวข้อที่ 3,\n      \"reason\": เหตุผล หัวข้อที่ 3 ไม่เกิน 30 คำ\n    }\n  ],\n  \"comment\": ข้อเสนอแนะ ไม่เกิน 30 คำ\n}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "5b4856dc-51ec-4d96-ab3d-98c3a3c1cfcc",
+      "name": "AI Agent",
+      "notesInFlow": true,
+      "executeOnce": false,
+      "notes": "ตรวจข้อสอบอัตนัย"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        240,
+        176
+      ],
+      "id": "a15c8600-4d8c-4732-8b5c-25fed8b537fe",
+      "name": "Ollama Chat Model",
+      "notesInFlow": true,
+      "credentials": {
+        "ollamaApi": {
+          "id": "PJfRGHwVV4pca6Ir",
+          "name": "Ollama account"
+        }
+      },
+      "notes": "llama3.2:latest"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "คะแนนและผลวิเคราะห์",
+        "completionMessage": "=<p><b>คะแนนที่ได้:</b>  {{ $json.point }}/{{ $json.max }}</p>\n<p><b>หัวข้อที่ 1 ({{ $json.items[0].point }}/{{ $json.items[0].max }}):</b> {{ $json.items[0].reason }}</p>\n<p><b>หัวข้อที่ 2 ({{ $json.items[1].point }}/{{ $json.items[1].max }}):</b> {{ $json.items[1].reason }}</p>\n<p><b>หัวข้อที่ 3 ({{ $json.items[2].point }}/{{ $json.items[2].max }}):</b> {{ $json.items[2].reason }}<p>\n<p><b>คำแนะนำ:</b> {{ $json.comment }}</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        720,
+        0
+      ],
+      "id": "85bdf70e-187e-4fc6-901b-2ed37554c7f7",
+      "name": "Form",
+      "webhookId": "3839bec7-25ce-4f16-894d-83d0846a2a44"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 320,
+        "width": 256,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        192,
+        -16
+      ],
+      "typeVersion": 1,
+      "id": "cb7fd8ac-983e-49cb-a46d-a15de8782b5f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "### สิ่งที่ต้องทำ คือ สร้างเป็นกระบวนการ\n- (อาจารย์) สร้างไฟล์ gsheet ประกอบด้วย คำถาม คำสำคัญ คำตอบ ใน gdrive ./input ↩\n- (n8n, manual) อ่านไฟล์ gsheet นำคำถามสร้างเป็น gform ↩\n- (อาจารย์) เปิดให้ gform ทำงาน ↩\n- (นักศึกษา) เข้าทำข้อสอบ ส่งแล้ว คำตอบอยู่ใน gsheet ↩\n- (n8n) ตรวจสอบข้อมูลใหม่ gsheet ถ้ามีแกะส่วน id, email, คำถาม, คำตอบ  ออกมา ↩\n- (n8n) ส่งคำถามและคำตอบเข้า Agent ตรวจข้อสอบอัตนัย ได้คะแนน ↩\n- (n8n) ส่ง email และ คะแนน เข้า Agent แจ้งคะแนน (จบ)\n- (n8n) ส่ง id และ คะแนน เข้า Agent บันทึกคะแนน (จบ)",
+        "height": 224,
+        "width": 576,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        160
+      ],
+      "typeVersion": 1,
+      "id": "925853a9-549e-485e-b551-14a44d90f628",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n// for (const item of $input.all()) {\n//   item.json.myNewField = 1;\n// }\n\nreturn JSON.parse($input.first().json.output);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        528,
+        0
+      ],
+      "id": "b25575e6-07fd-41e9-bd59-3528b0506c66",
+      "name": "Code",
+      "notesInFlow": true,
+      "notes": "แปลงเป็น JSON Object"
+    },
+    {
+      "parameters": {
+        "content": "### เตือน\nเปลี่ยนโจทย์ ต้องแก้ใน agent ด้วย",
+        "height": 80,
+        "width": 256,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        16,
+        -112
+      ],
+      "typeVersion": 1,
+      "id": "1a9571f6-91e8-46b3-aeff-cc7b33d236d4",
+      "name": "Sticky Note2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1ae9549f-af31-4631-a9ba-6b61b6dbcf91",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "27164b2c09ed1a85e07690db378fa2ee280393e41219e96802631db6ccfacc28"
+  },
+  "id": "7FMP3WwagOjtdEFi",
+  "tags": [
+    {
+      "createdAt": "2025-08-16T06:02:53.024Z",
+      "updatedAt": "2025-08-16T06:02:53.024Z",
+      "id": "6zJbp6he4ZfBphVj",
+      "name": "form"
+    },
+    {
+      "createdAt": "2025-08-16T04:24:07.129Z",
+      "updatedAt": "2025-08-16T04:24:07.129Z",
+      "id": "JjfkFchjZLmh9vp0",
+      "name": "agent"
+    }
+  ]
+}
