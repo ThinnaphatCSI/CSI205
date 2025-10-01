@@ -52,32 +52,6 @@ This is a sample learning tool for the CSI205 course.
 
 ---
 
-<h2>🛠️ Technologies Used</h2>
-
-<ul>
-  <li>HTML5</li>
-  <li>CSS3</li>
-  <li>JavaScript</li>
-  <li>Git</li>
-  <li>Node.js</li>
-</ul>
-
----
-
-<h2>📚 Course Topics</h2>
-
-<ol>
-  <li>Introduction to Frontend Development</li>
-  <li>HTML Fundamentals</li>
-  <li>CSS Styling and Layouts</li>
-  <li>JavaScript Programming</li>
-  <li>Responsive Web Design</li>
-  <li>Version Control with Git</li>
-  <li>Introduction to Node.js</li>
-</ol>
-
----
-
 <h2>📞 Contact</h2>
 
 <p>For more information about this course, please contact:</p>
